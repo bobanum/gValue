@@ -1,0 +1,338 @@
+{
+	"annee": "2015",
+	"cours": "Intégration Web I",
+	"titre": "Projet synthèse",
+	"valeur": 20,
+	"criteres": {
+		"bpgfrljudsbga": {
+			"id": "evaluation",
+			"titre": "Évaluation",
+			"valeur": null,
+			"criteres": {
+				"bpgfrljudgjxg": {
+					"valeur": 15,
+					"titre": "Visuel et effort"
+				},
+				"bpgfrguuwqlwy": {
+					"valeur": null,
+					"titre": "Mise en page",
+					"criteres": {
+						"bpgfrljudhvfc": {
+							"valeur": 5,
+							"titre": "Mise en forme des différentes parties de la page (header, footer, colonnes...)."
+						},
+						"bpgfrguuwqaey": {
+							"valeur": 6,
+							"titre": "Utilisation variées des propriétés CSS (complexité)."
+						},
+						"bpgfrguuwrgou": {
+							"valeur": 2,
+							"titre": "Largeur. La page est visible dans une interface de 1024&nbsp;pixels de largeur."
+						},
+						"bpgfrguuwopgy": {
+							"valeur": 1,
+							"titre": "Interface centrée"
+						},
+						"bpgfrguuwpflq": {
+							"valeur": 3,
+							"titre": "Interface constante pour toutes les pages"
+						},
+						"bpgfrguuwpzvc": {
+							"valeur": 3,
+							"titre": "Menu réagit à la souris"
+						},
+						"bpgfrguuwshlw": {
+							"valeur": 1,
+							"titre": "Élément courant du menu mis en évidence"
+						},
+						"bpgfrguuwpvao": {
+							"valeur": 2,
+							"titre": "Image en arrière-plan (background-image)"
+						}
+					}
+				},
+				"bpgfrguuwnjzq": {
+					"valeur": null,
+					"titre": "Interface",
+					"criteres": {
+						"bpgfrljudjufw": {
+							"valeur": 8,
+							"titre": "Utilisation des balises de structure"
+						},
+						"bpgfrguuwqsom": {
+							"valeur": 3,
+							"titre": "Utilisation d'une liste pour le menu"
+						},
+						"bpgfrguuwqcku": {
+							"valeur": 3,
+							"titre": "Découpage constant pour toutes les pages"
+						},
+						"bpgfrguuwpsmi": {
+							"valeur": 2,
+							"titre": "Logo PNG avec transparence ; mène vers la page d'accueil."
+						},
+						"bpgfrguuwqbky": {
+							"valeur": 2,
+							"titre": "Copyright"
+						},
+						"bpgfrguuwngmi": {
+							"valeur": 2,
+							"titre": "Publicité obligatoire"
+						},
+						"bpgfrguuwsurg": {
+							"valeur": 2,
+							"titre": "2 autres publicités; format standard"
+						},
+						"bpgfriqcfxsks": {
+							"valeur": null,
+							"titre": "Formulaire de recherche",
+							"criteres": {
+								"bpgfrljudjnes": {
+									"valeur": 1,
+									"titre": "Formulaire présent"
+								},
+								"bpgfriqcghdym": {
+									"valeur": 1,
+									"titre": "Sur toutes les pages"
+								},
+								"bpgfriqcgddga": {
+									"valeur": 1,
+									"titre": "Pointe vers Google"
+								},
+								"bpgfriqcggulc": {
+									"valeur": 1,
+									"titre": "Fait une recherche (champ q)"
+								},
+								"bpgfriqcggqbw": {
+									"valeur": 1,
+									"titre": "Recherche dans le bon site (champ caché)"
+								}
+							}
+						},
+						"bpgfriqcgfbem": {
+							"valeur": null,
+							"titre": "Section <cite>Nouvelles</cite>",
+							"criteres": {
+								"bpgfrljudiwqy": {
+									"valeur": 1,
+									"titre": "Présente au moins 3 nouvelles"
+								},
+								"bpgfriqcgfwge": {
+									"valeur": 1,
+									"titre": "Sur toutes les pages"
+								},
+								"bpgfriqcgdfie": {
+									"valeur": 1,
+									"titre": "Disposée en colonne"
+								}
+							}
+						}
+					}
+				},
+				"bpgfriqcgedtg": {
+					"valeur": null,
+					"titre": "Contenu",
+					"criteres": {
+						"bpgfrljudhviu": {
+							"valeur": 8,
+							"titre": "Découpage sémantique : bonne utilisation des balises p, h1, h2..."
+						},
+						"bpgfriqcggqrq": {
+							"valeur": 3,
+							"titre": "Découpage constant pour toutes les pages"
+						},
+						"bpgfriqcgdwwo": {
+							"valeur": 3,
+							"titre": "Liens avec adresse plausible (pas de href vide ou de dièze)"
+						},
+						"bpgfriqcgfeua": {
+							"valeur": 3,
+							"titre": "Image avec légende"
+						},
+						"bpgfriqcgfppq": {
+							"valeur": 5,
+							"titre": "Page d'accueil"
+						},
+						"bpgfriqcgdlys": {
+							"valeur": null,
+							"titre": "Page de recherche",
+							"criteres": {
+								"bpgfrljudjayy": {
+									"valeur": 1,
+									"titre": "Présente"
+								},
+								"bpgfriqcghuce": {
+									"valeur": 1,
+									"titre": "Contenu de recherche fictive (lorem ipsum)"
+								},
+								"bpgfrjznqujim": {
+									"valeur": 3,
+									"titre": "Structure et mise en page adéquate"
+								}
+							}
+						}
+					}
+				},
+				"bpgfrjznqtkzw": {
+					"valeur": 5,
+					"titre": "Publication"
+				}
+			}
+		},
+		"bpgfrljudsbgb": {
+			"id": "penalites",
+			"titre": "Pénalités",
+			"valeur": null,
+			"criteres": {
+				"bpgfrljudihqo": {
+					"valeur": null,
+					"titre": "Arborescence",
+					"criteres": {
+						"bpgfrljudjscm": {
+							"valeur": -2,
+							"titre": "Fichiers de contenu pas à la racine"
+						},
+						"bpgfrjznqwske": {
+							"valeur": -3,
+							"titre": "Pas de sous-dossier <code>images</code>"
+						},
+						"bpgfrjznqybrc": {
+							"valeur": -1,
+							"titre": "CSS pas à la racine"
+						},
+						"bpgfrjznqxbrk": {
+							"valeur": -5,
+							"titre": "Erreur de nomenclature"
+						},
+						"bpgfrjznqtgui": {
+							"valeur": -1,
+							"titre": "Les noms des fichiers ne correspondent pas au <code>h1</code> du contenu"
+						},
+						"bpgfrjznqtigm": {
+							"valeur": -3,
+							"titre": "Fichiers inutiles dans le projet (psd, txt, etc.)"
+						},
+						"bpgfrjznqwaia": {
+							"valeur": -3,
+							"titre": "Image non locale"
+						}
+					}
+				},
+				"bpgfrjznrbnoi": {
+					"valeur": null,
+					"titre": "HTML",
+					"criteres": {
+						"bpgfrljudirzc": {
+							"valeur": -5,
+							"titre": "Validité du code"
+						},
+						"bpgfrjznqzcrw": {
+							"valeur": -3,
+							"titre": "Balises <code>br</code> inutiles"
+						},
+						"bpgfrjznqzpeu": {
+							"valeur": -5,
+							"titre": "Code HTML en dehors du body"
+						},
+						"bpgfrjznrearw": {
+							"valeur": -5,
+							"titre": "Adresses d'images invalides. (images non trouvées)"
+						},
+						"bpgfrjznrdaxc": {
+							"valeur": -2,
+							"titre": "Images sans <code>alt</code>"
+						},
+						"bpgfrjznqzwou": {
+							"valeur": -3,
+							"titre": "Mise en page du code HTML"
+						}
+					}
+				},
+				"bpgfrkdwtmelc": {
+					"valeur": null,
+					"titre": "CSS",
+					"criteres": {
+						"bpgfrljudmrmo": {
+							"valeur": -3,
+							"titre": "Plusieurs feuilles de styles (ex.: une par page)"
+						},
+						"bpgfrkdwtphnk": {
+							"valeur": -5,
+							"titre": "Spécificité des sélecteurs (bonne utilisation des classes, id et relations)"
+						},
+						"bpgfrkdwtqmcs": {
+							"valeur": -5,
+							"titre": "Optimisation des règles (évite de répéter inutilement des propriétés)"
+						},
+						"bpgfrkdwtrkge": {
+							"valeur": -3,
+							"titre": "Mise en page du code CSS"
+						}
+					}
+				},
+				"bpgfrkdwtreqy": {
+					"valeur": null,
+					"titre": "Générales",
+					"criteres": {
+						"bpgfrljudngui": {
+							"valeur": -9,
+							"titre": "Pas 3 pages de contenu"
+						},
+						"bpgfrkdwtpews": {
+							"valeur": -5,
+							"titre": "Site pas en français"
+						},
+						"bpgfrkdwttjie": {
+							"valeur": -2,
+							"titre": "Références nécessaires absentes"
+						},
+						"bpgfrkdwttugm": {
+							"valeur": -2,
+							"titre": "Publicité dans le footer (absente ou plus qu'une)"
+						}
+					}
+				},
+				"bpgfrkdwtsdum": {
+					"valeur": null,
+					"titre": "Remise",
+					"criteres": {
+						"bpgfrljudldcy": {
+							"valeur": -1,
+							"titre": "Pas de raccourcis dans le dossier de remise"
+						},
+						"bpgfrkdwtreos": {
+							"valeur": -10,
+							"titre": "Pas de dossier dans REMISE (seulement TIM)"
+						},
+						"bpgfrkdwtpsoe": {
+							"valeur": -1,
+							"titre": "Dossier mal nommé"
+						}
+					}
+				},
+				"bpgfrkdwtruko": {
+					"valeur": null,
+					"titre": "Autres",
+					"criteres": {
+						"bpgfrljudmmey": {
+							"valeur": null,
+							"titre": ""
+						},
+						"bpgfrkdwtpeke": {
+							"valeur": null,
+							"titre": ""
+						},
+						"bpgfrkdwtpfka": {
+							"valeur": null,
+							"titre": ""
+						},
+						"bpgfrkdwttthq": {
+							"valeur": null,
+							"titre": ""
+						}
+					}
+				}
+			}
+		}
+	}
+}

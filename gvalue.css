@@ -92,7 +92,7 @@ div.interface > header {
 div.interface > footer {
   order: 1;
 }
-div#gestionEvaluations fieldset {
+fieldset {
   border: 1px solid black;
 }
 div#gestionEvaluations legend {

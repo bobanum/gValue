@@ -5,13 +5,9 @@ class GValue {
 	static function traitement() {
 		if (isset($_GET["action"])) {
 			if ($_GET["action"] === "listeEvaluations") {
-				header("content-type: application/json");
-//				header("content-type: text/plain");
 				$resultat = self::getFolders("evaluations");
-				exit (json_encode($resultat));
+				$resultat = json_encode($resultat);
 			} elseif ($_GET["action"] === "loadEvaluation") {
-				header("content-type: application/json");
-//				header("content-type: text/plain");
 				$path = self::$path_evaluations;
 				$path .= "/" . $_GET['cours'];
 				if (!file_exists($path)) {
@@ -21,13 +17,14 @@ class GValue {
 				if (!file_exists($path)) {
 					exit('{"erreur": "Année \"'.$_GET['annee'].'\" inexistante"}');
 				}
-				$path .= "/" . $_GET['evaluation'];
+				$path .= "/" . $_GET['evaluation']. ".json";
 				if (!file_exists($path)) {
 					exit('{"erreur": "Évaluation \"'.$_GET['evaluation'].'\" inexistante"}');
 				}
-				$resultat = file_get_contents($path."/grille.json");
-				exit($resultat);
+				$resultat = file_get_contents($path);
 			}
+			header("content-type: application/json");
+			exit($resultat);
 		}
 
 	}

@@ -25,6 +25,16 @@ class Critere {
 		}
 		return this;
 	}
+	static label(champ) {
+		var proto;
+		if (this.labels[champ] !== undefined) {
+			return this.labels[champ];
+		} else if (proto = Object.getPrototypeOf(this), proto.label) {
+			return proto.label(champ);
+		} else {
+			return champ;
+		}
+	}
 	/**
 	 * Retourne un nouvel objet avec les propriétés données sous d'objet
 	 * @param   {object}  obj L'objet contenant les propriétés initiales de l'objet
@@ -36,6 +46,10 @@ class Critere {
 		return resultat;
 	}
 	static init() {
+		this.labels = {
+			criteres: "Critères",
+			valeur: "Valeur"
+		};
 
 	}
 }

@@ -1,5 +1,5 @@
 /*jslint esnext:true,browser:true*/
-/*global App*/
+/*global App, Evaluation*/
 /*exported GValue*/
 class GValue extends App {
 	static callApi(data, callback) {
@@ -157,7 +157,8 @@ class GValue extends App {
 		var html = document.createElement("div");
 		html.setAttribute("id", "editionEvaluation");
 		this.callApi({action:"loadEvaluation", cours:cours, annee:annee, evaluation:evaluation}, function (json) {
-			html.appendChild(this.listeCours(json));
+			var evaluation = Evaluation.fromObject(json);
+			html.appendChild(evaluation.dom);
 		});
 		return html;
 	}
