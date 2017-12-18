@@ -1,0 +1,122 @@
+html {
+	height: 100%;
+}
+body {
+	font-family: arial;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+ul, ol {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+.module {
+	display: flex;
+	flex-direction: column;
+	& > * {
+		flex: 1 1 auto;
+	}
+	& > header,
+	& > footer {
+		flex: 0 0 auto;
+		background-color: rgba(0, 0, 0, .1);
+		padding: 1em;
+	}
+	& > header {
+		order: -1;
+	}
+	& > footer {
+		order: 1;
+	}
+}
+*.options {
+	display: flex;
+}
+*.bouton {
+	width: 1em;
+	height: 1em;
+	display: flex;
+	margin: 0 .25em;
+	overflow: hidden;
+	color: transparent;
+	cursor: pointer;
+	&::before {
+		flex: 0 0 auto;
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+}
+header {
+	& > h1,
+	& > h2 {
+		margin: 0;
+	}
+	& > h1 {
+		margin: 0;
+		font-size: 4em;
+		display: flex;
+		align-items: center;
+		color: #369;
+		text-shadow: .05ch .05ch .1em rgba(0,0,0,.5);
+		letter-spacing: -.1ch;
+		em {
+			margin-left: -.1em;
+			font-weight: normal;
+			font-variant: small-caps;
+		}
+		img {
+			height: 1.2em;
+		}
+	}
+}
+div.interface {
+	min-height: 100%;
+	.module;
+}
+div#gestionEvaluations {
+	fieldset {
+		border: 1px solid black
+	}
+	legend {
+		font-size: smaller;
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	li {
+		margin: 0em .5em;
+		padding: .2em;
+//		border: solid;
+		&:nth-child(odd) {
+			background-color: rgba(0,0,0,.05);
+		}
+		&:nth-child(even) {
+			background-color: rgba(0,0,0,.1);
+		}
+		& > div.label {
+			display: flex;
+			align-items: center;
+	//		border: solid;
+			justify-content: space-between;
+			& > * {
+				flex: 1 1 auto;
+			}
+			& > *.options {
+				flex-grow: 0;
+			}
+		}
+	}
+	input {
+		font: inherit;
+		&:read-only {
+			background-color: transparent;
+			border-color: transparent;
+		}
+	}
+
+}
