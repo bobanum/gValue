@@ -7,6 +7,7 @@ class Eleve {
 		this.nom = "";
 		this.prenom = "";
 		this.groupe = "";
+		this.resultats = {};
 	}
 	html_option() {
 		let resultat = document.createElement("option");
@@ -14,10 +15,10 @@ class Eleve {
 		resultat.innerHTML = this.nom + ", " + this.prenom + " [" + this.matricule + "]";
 		resultat.addEventListener("click", function (e) {
 			e.stopPropagation();
-//			e.cancelBubble = true;
-//			console.log("oui");
-//			return false;
-		});
+			e.cancelBubble = true;
+			return false;
+		}, true);
+		resultat.obj = this;
 		return resultat;
 	}
 	static html_optgroup(nomGroupe, groupe) {
@@ -55,6 +56,12 @@ class Eleve {
 		});
 		return resultat;
 	}
+	chargerResultat(evaluation) {
+		evaluation = evaluation || GValue.evaluation;
+		GValue.callApi({action: "loadResultat", path: evaluation.path, eleve: this.matricule}, function () {
+			debugger;
+		});
+	}
 	static html_selectEleve(eleves) {
 		eleves = eleves || this.eleves || {};
 		var resultat = document.createElement("select");
@@ -65,6 +72,7 @@ class Eleve {
 			let groupe = this.eleves[nomGroupe];
 			resultat.appendChild(this.html_optgroup(nomGroupe, groupe));
 		}
+		resultat.addEventListener("change", this.evt.selectEleve.change);
 		return resultat;
 	}
 	static fromArray(a) {
@@ -92,4 +100,14 @@ class Eleve {
 		});
 		return conteneur;
 	}
+	static init() {
+		this.evt = {
+			selectEleve: {
+				change: function () {
+					this.selectedOptions[0].obj.chargerResultat();
+				}
+			}
+		};
+	}
 }
+Eleve.init();

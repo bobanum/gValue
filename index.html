@@ -4,18 +4,28 @@
 <head>
 	<meta charset="UTF-8" />
 	<link rel="icon" href="favicon.png">
-	<link rel="stylesheet" href="gvalue.css" />
+	<link rel="stylesheet" href="css/gvalue.css" />
 	<script src="jsapp/App.js"></script>
-	<script src="GValue.js"></script>
-	<script src="Critere.js"></script>
-	<script src="Evaluation.js"></script>
-	<script src="Eleve.js"></script>
-	<script src="Resultat.js"></script>
+	<script src="js/GValue.js"></script>
+	<script src="js/Critere.js"></script>
+	<script src="js/Evaluation.js"></script>
+	<script src="js/Eleve.js"></script>
+	<script src="js/Resultat.js"></script>
 	<script>
 		GValue.mode = GValue.MODE_EVALUATION;
 		window.addEventListener("load", function () {
+//			var evaluation = new Evaluation();
+//			evaluation.cours = "web1";
+//			evaluation.annee = "A2017";
+//			evaluation.id = "projetsynthese";
+//			evaluation.load(function () {
+//				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
+//			});
+			var evaluation = Evaluation.load("web1/A2017/projetsynthese", function () {
+				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
+			})
+
 			document.querySelector("div.interface>div.body>div.colonne").appendChild(Eleve.loadAll("web1", "A2017"));
-			document.querySelector("div.interface>div.body>div.main").appendChild(GValue.editionEvaluation("web1", "A2017", "projetsynthese"));
 		})
 	</script>
 	<title>Édition &mdash; gValue</title>

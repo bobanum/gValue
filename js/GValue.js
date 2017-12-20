@@ -2,13 +2,14 @@
 /*global App, Evaluation*/
 /*exported GValue*/
 class GValue extends App {
-	static callApi(data, callback) {
+	static callApi(data, callback, thisArg) {
+		thisArg = thisArg || this;
 		var xhr = new XMLHttpRequest();
 		xhr.open("get", "api.php" + this.urlEncode(data));
 		xhr.responseType = "json";
 		xhr.obj = this;
 		xhr.addEventListener("load", function () {
-			callback.call(this.obj, this.response);
+			callback.call(thisArg, this.response);
 		});
 		xhr.send(null);
 		return xhr;
@@ -157,15 +158,14 @@ class GValue extends App {
 		var html = document.createElement("div");
 		html.setAttribute("id", "editionEvaluation");
 		this.callApi({action:"loadEvaluation", cours:cours, annee:annee, evaluation:evaluation}, function (json) {
-			var evaluation = Evaluation.fromObject(json);
-			html.appendChild(evaluation.dom);
+			GValue.evaluation = Evaluation.fromObject(json);
+			html.appendChild(GValue.evaluation.dom);
 		});
 		return html;
 	}
 	static init() {
 		this.MODE_EVALUATION = 0;
 		this.MODE_EDITION = 1;
-
 	}
 }
 GValue.init();

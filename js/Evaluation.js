@@ -1,10 +1,11 @@
 /*jslint browser:true, esnext:true*/
-/*global Critere*/
+/*global GValue, Critere*/
 class Evaluation extends Critere {
 	constructor() {
 		super();
 		this.cours = "";
 		this.annee = "";
+		this.id = "";
 	}
 	get dom() {
 		if (!this._dom) {
@@ -12,6 +13,9 @@ class Evaluation extends Critere {
 			this._dom.obj = this;
 		}
 		return this._dom;
+	}
+	get path() {
+		return this.cours + "/" + this.annee + "/" + this.id;
 	}
 //	dom_creer() {
 //		var resultat = document.createElement("div");
@@ -28,7 +32,25 @@ class Evaluation extends Critere {
 		resultat.appendChild(this.html_ligneDonnees("titre"));
 		return resultat;
 	}
-
+	load(callback) {
+		GValue.callApi({action:"loadEvaluation", path: this.path}, function (json) {
+			this.fill(json);
+			if (callback) {
+				callback.call(this, json);
+			}
+		}, this);
+		return this;
+	}
+	static load(path, callback) {
+		var resultat = new Evaluation();
+		GValue.callApi({action:"loadEvaluation", path: path}, function (json) {
+			this.fill(json);
+			if (callback) {
+				callback.call(this, json);
+			}
+		}, resultat);
+		return resultat;
+	}
 	static init() {
 		this.labels = {
 			cours: "Cours",
