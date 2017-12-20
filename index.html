@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 	<meta charset="UTF-8" />
 	<link rel="icon" href="favicon.png">
-	<link rel="stylesheet" href="gvalue.css"/>
+	<link rel="stylesheet" href="gvalue.css" />
 	<script src="jsapp/App.js"></script>
 	<script src="GValue.js"></script>
-	<title>gValue</title>
+	<script src="Critere.js"></script>
+	<script src="Evaluation.js"></script>
+	<script src="Eleve.js"></script>
+	<script src="Resultat.js"></script>
+	<script>
+		GValue.mode = GValue.MODE_EVALUATION;
+		window.addEventListener("load", function () {
+			document.querySelector("div.interface>div.body>div.colonne").appendChild(Eleve.loadAll("web1", "A2017"));
+			document.querySelector("div.interface>div.body>div.main").appendChild(GValue.editionEvaluation("web1", "A2017", "projetsynthese"));
+		})
+	</script>
+	<title>Édition &mdash; gValue</title>
 </head>
+
 <body>
 	<div class="interface">
-		<header><h1><img src="images/logoGValue.svg" alt="logo gValue"/> g<em>Value</em></h1></header>
-		<footer>&copy;</footer>
+		<header>
+			<h1><img src="images/logoGValue.svg" height="48" alt="logo gValue"/> gValue</h1>
+			<h2>Évaluation</h2>
+		</header>
+		<footer>&copy; 2017 - Martin Boudreau</footer>
 		<div class="body">
-
+			<div class="main"></div>
+			<div class="colonne"></div>
 		</div>
 	</div>
 </body>
+
 </html>

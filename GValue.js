@@ -163,6 +163,8 @@ class GValue extends App {
 		return html;
 	}
 	static init() {
+		this.MODE_EVALUATION = 0;
+		this.MODE_EDITION = 1;
 
 	}
 }

@@ -19,6 +19,7 @@
 					"criteres": {
 						"bpgfrljudhvfc": {
 							"valeur": 5,
+							"type": "echelle",
 							"titre": "Mise en forme des différentes parties de la page (header, footer, colonnes...)."
 						},
 						"bpgfrguuwqaey": {

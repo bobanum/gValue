@@ -13,29 +13,22 @@ class Evaluation extends Critere {
 		}
 		return this._dom;
 	}
-	dom_creer() {
+//	dom_creer() {
+//		var resultat = document.createElement("div");
+//		resultat.classList.add("evaluation");
+//		resultat.appendChild(this.html_criteres());
+//		resultat.appendChild(this.html_criteres());
+//		return resultat;
+//	}
+	html_details() {
 		var resultat = document.createElement("div");
-		resultat.classList.add("evaluation");
+		resultat.classList.add("details");
 		resultat.appendChild(this.html_ligneDonnees("cours"));
 		resultat.appendChild(this.html_ligneDonnees("annee"));
+		resultat.appendChild(this.html_ligneDonnees("titre"));
 		return resultat;
 	}
-	html_ligneDonnees(champ, contenu) {
-		var resultat = document.createElement("div");
-		var label = resultat.appendChild(document.createElement("span"));
-		label.classList.add("label");
-		label.innerHTML = Evaluation.label(champ);
-		if (contenu === undefined) {
-			contenu = this[champ];
-		}
-		if (contenu instanceof HTMLElement) {
-			resultat.appendChild(contenu);
-			return resultat;
-		}
-		var span = resultat.appendChild(document.createElement("span"));
-		span.innerHTML = contenu;
-		return resultat;
-	}
+
 	static init() {
 		this.labels = {
 			cours: "Cours",

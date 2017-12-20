@@ -12,6 +12,12 @@ ul, ol {
 	padding: 0;
 	list-style-type: none;
 }
+optgroup:disabled {
+	cursor: not-allowed;
+	& > option {
+		display: none;
+	}
+}
 .module {
 	display: flex;
 	flex-direction: column;
@@ -29,6 +35,17 @@ ul, ol {
 	}
 	& > footer {
 		order: 1;
+	}
+}
+.colonnes {
+	display:flex;
+	& > * {
+		flex: 1 1 auto;
+		display: flex;
+		flex-direction: column;
+	}
+	& > *.colonne {
+		flex: 0 0 auto;
 	}
 }
 *.options {
@@ -50,6 +67,8 @@ ul, ol {
 	}
 }
 header {
+	display: flex;
+	justify-content: space-between;
 	& > h1,
 	& > h2 {
 		margin: 0;
@@ -70,6 +89,13 @@ header {
 		img {
 			height: 1.2em;
 		}
+	}
+}
+div.body {
+	padding: 1em;
+	.colonnes;
+	& > * + * {
+		margin-left: 1em;
 	}
 }
 div.interface {
@@ -119,4 +145,38 @@ div#gestionEvaluations {
 		}
 	}
 
+}
+
+div.critere {
+	border: solid;
+	margin: .25em;
+	padding: .25em;
+}
+div.details {
+	display: flex;
+	justify-content: space-between;
+	& > *.champ-id {
+		display: none;
+	}
+	& *.label {
+		display: none;
+	}
+}
+span.label {
+	font-weight: bold;
+	&::after {
+		content: ":";
+		padding: 0 .5ch;
+	}
+}
+section.eleves {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	& > h1 {
+		margin: 0;
+	}
+	&>select {
+		flex: 1 1 auto;
+	}
 }
