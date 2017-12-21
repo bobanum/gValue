@@ -1,5 +1,5 @@
 /*jslint browser:true, esnext:true*/
-/*global GValue, Critere*/
+/*global GValue, Critere, Resultat*/
 class Evaluation extends Critere {
 	constructor() {
 		super();
@@ -17,13 +17,15 @@ class Evaluation extends Critere {
 	get path() {
 		return this.cours + "/" + this.annee + "/" + this.id;
 	}
-//	dom_creer() {
-//		var resultat = document.createElement("div");
-//		resultat.classList.add("evaluation");
-//		resultat.appendChild(this.html_criteres());
-//		resultat.appendChild(this.html_criteres());
-//		return resultat;
-//	}
+	dom_creer() {
+		var resultat = document.createElement("div");
+		resultat.classList.add("evaluation");
+		if (GValue.mode === GValue.MODE_EVALUATION) {
+			resultat.appendChild(Resultat.dom_identification);
+		}
+		resultat.appendChild(Critere.prototype.dom_creer.call(this));
+		return resultat;
+	}
 	html_details() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");

@@ -50,6 +50,41 @@ optgroup:disabled > option {
 .colonnes > *.colonne {
   flex: 0 0 auto;
 }
+.clicable {
+  flex: 0 0 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  height: 2em;
+  padding: 0 .5em;
+  margin: .25em;
+}
+.clicable > input {
+  background-color: transparent;
+  border: 1px solid #999;
+}
+.clicables {
+  display: flex;
+}
+.clicables > * {
+  flex: 0 0 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  height: 2em;
+  padding: 0 .5em;
+  margin: .25em;
+}
+.clicables > * > input {
+  background-color: transparent;
+  border: 1px solid #999;
+}
 *.options {
   display: flex;
 }
@@ -168,13 +203,23 @@ div#gestionEvaluations input:read-only {
   border-color: transparent;
 }
 div.critere {
-  border: solid;
+  border: 1px solid #b3b3b3;
   margin: .25em;
   padding: .25em;
 }
 div.details {
-  display: flex;
+  flex-direction: row-reverse;
   justify-content: space-between;
+}
+div.details,
+div.details * {
+  display: flex;
+}
+div.details > *.champ-titre {
+  flex: 1 1 auto;
+}
+div.details > *.champ-valeur {
+  flex: 0 0 20em;
 }
 div.details > *.champ-id {
   display: none;
@@ -182,12 +227,21 @@ div.details > *.champ-id {
 div.details *.label {
   display: none;
 }
+div.details input[type=text] {
+  width: 5em;
+}
 span.label {
   font-weight: bold;
 }
 span.label::after {
   content: ":";
   padding: 0 .5ch;
+}
+.aides {
+  display: none;
+}
+.courant > .aides {
+  display: inherit;
 }
 section.eleves {
   flex: 1 1 auto;
@@ -200,4 +254,7 @@ section.eleves > h1 {
 section.eleves > select {
   font: inherit;
   flex: 1 1 auto;
+}
+span[data-valeur]:after {
+  content: "\A0[" attr(data-valeur) "]";
 }

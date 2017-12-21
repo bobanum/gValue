@@ -7,7 +7,8 @@ body {
 	margin: 0;
 	padding: 0;
 }
-ul, ol {
+ul,
+ol {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
@@ -38,7 +39,7 @@ optgroup:disabled {
 	}
 }
 .colonnes {
-	display:flex;
+	display: flex;
 	& > * {
 		flex: 1 1 auto;
 		display: flex;
@@ -46,6 +47,28 @@ optgroup:disabled {
 	}
 	& > *.colonne {
 		flex: 0 0 auto;
+	}
+}
+.clicable {
+	flex: 0 0 3em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background-color: rgba(0,0,0,.1);
+	border-radius: 1em;
+	height: 2em;
+	padding: 0 .5em;
+	margin: .25em;
+	& > input {
+		background-color: transparent;
+		border: 1px solid #999;
+	}
+}
+.clicables {
+	display: flex;
+	& > * {
+		.clicable;
 	}
 }
 *.options {
@@ -79,7 +102,7 @@ header {
 		display: flex;
 		align-items: center;
 		color: #369;
-		text-shadow: .05ch .05ch .1em rgba(0,0,0,.5);
+		text-shadow: .05ch .05ch .1em rgba(0, 0, 0, .5);
 		letter-spacing: -.1ch;
 		em {
 			margin-left: -.1em;
@@ -117,17 +140,17 @@ div#gestionEvaluations {
 	li {
 		margin: 0em .5em;
 		padding: .2em;
-//		border: solid;
+		//		border: solid;
 		&:nth-child(odd) {
-			background-color: rgba(0,0,0,.05);
+			background-color: rgba(0, 0, 0, .05);
 		}
 		&:nth-child(even) {
-			background-color: rgba(0,0,0,.1);
+			background-color: rgba(0, 0, 0, .1);
 		}
 		& > div.label {
 			display: flex;
 			align-items: center;
-	//		border: solid;
+			//		border: solid;
 			justify-content: space-between;
 			& > * {
 				flex: 1 1 auto;
@@ -144,22 +167,32 @@ div#gestionEvaluations {
 			border-color: transparent;
 		}
 	}
-
 }
-
 div.critere {
-	border: solid;
+	border: 1px solid rgb(70%,70%,70%,);
 	margin: .25em;
 	padding: .25em;
 }
 div.details {
-	display: flex;
+	&, * {
+		display: flex;
+	}
+	flex-direction: row-reverse;
 	justify-content: space-between;
+	& > *.champ-titre {
+		flex: 1 1 auto;
+	}
+	& > *.champ-valeur {
+		flex: 0 0 20em;
+	}
 	& > *.champ-id {
 		display: none;
 	}
 	& *.label {
 		display: none;
+	}
+	input[type=text] {
+		width: 5em;
 	}
 }
 span.label {
@@ -167,6 +200,14 @@ span.label {
 	&::after {
 		content: ":";
 		padding: 0 .5ch;
+	}
+}
+.aides {
+	display: none;
+}
+.courant {
+	& > .aides {
+		display: inherit;
 	}
 }
 section.eleves {
@@ -179,5 +220,10 @@ section.eleves {
 	&>select {
 		font: inherit;
 		flex: 1 1 auto;
+	}
+}
+span[data-valeur] {
+	&:after {
+		content: "\A0[" attr(data-valeur) "]";
 	}
 }

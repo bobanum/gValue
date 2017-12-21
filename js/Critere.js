@@ -1,8 +1,8 @@
 /*jslint browser:true, esnext:true*/
-/*global App*/
+/*global GValue*/
 class Critere {
 	constructor() {
-		this.id = App.creerId();
+		this.id = GValue.creerId();
 		this.titre = "";
 		this._valeur = "";
 		this.commentaires = {};
@@ -23,7 +23,7 @@ class Critere {
 		if (val instanceof Critere) {
 			this.ajouterCritere(val);
 		} else if (val instanceof Array) {
-			val.forEach(critere=>this.ajouterCritere(critere));
+			val.forEach(critere => this.ajouterCritere(critere));
 		} else if (typeof val === "object") {
 			for (let k in val) {
 				this.ajouterCritere(Critere.fromObject(val[k]), k);
@@ -40,12 +40,60 @@ class Critere {
 	set valeur(val) {
 		this._valeur = val;
 	}
+	get modeEval() {
+		return GValue.mode === GValue.MODE_EVALUATION;
+	}
 	dom_creer() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("critere");
 		resultat.setAttribute("id", "critere_" + this.id);
 		resultat.appendChild(this.html_details());
 		resultat.appendChild(this.html_criteres());
+		resultat.appendChild(this.html_aides());
+		return resultat;
+	}
+	dom_valeur() {
+		var resultat;
+		resultat = document.createElement("span");
+		if (this.modeEval) {
+			let input = resultat.appendChild(document.createElement("input"));
+			input.setAttribute("type", "text");
+			input.setAttribute("id", this.id);
+			input.addEventListener("focus", this.evt.input_resultat.focus);
+			input.obj = this;
+			let span = resultat.appendChild(document.createElement("span"));
+			span.innerHTML = "/" + this.valeur;
+		} else {
+			let input = resultat.appendChild(document.createElement("input"));
+			input.setAttribute("type", "text");
+			input.setAttribute("value", this.valeur);
+		}
+		return resultat;
+	}
+	html_echelle(max, nbVals) {
+		var vals = this.echelle(max, nbVals);
+		var resultat = document.createElement("span");
+		resultat.classList.add("echelle");
+		resultat.classList.add("clicables");
+		vals.forEach(function (v) {
+			let span = resultat.appendChild(document.createElement("span"));
+			span.innerHTML = v;
+		});
+		return resultat;
+	}
+	html_choix(max, vals) {
+		var nbVals = vals.length;
+		var echelle = this.echelle(max, nbVals - 1);
+
+		var resultat = document.createElement("span");
+		resultat.classList.add("choix");
+		resultat.classList.add("clicables");
+		vals.forEach(function (v, i) {
+			let span = resultat.appendChild(document.createElement("span"));
+			span.innerHTML = v;
+			span.setAttribute("data-valeur", echelle[i]);
+			span.setAttribute("title", echelle[i]);
+		});
 		return resultat;
 	}
 	html_details() {
@@ -56,6 +104,33 @@ class Critere {
 		resultat.appendChild(this.html_ligneDonnees("valeur"));
 		return resultat;
 	}
+	html_aides() {
+		var resultat = document.createElement("div");
+		resultat.classList.add("aides");
+		if (this.type && this.type.startsWith("echelle")) {
+			let nbVals = parseInt(this.type.slice(7));
+			resultat.appendChild(this.html_echelle(this.valeur, nbVals));
+		} else if (this.type && this.type.startsWith("choix")) {
+			let vals = this.type.split(":")[1].split("|");
+			resultat.appendChild(this.html_choix(this.valeur, vals));
+		}
+		resultat.appendChild(this.html_commentaires());
+		return resultat;
+	}
+	html_commentaires() {
+		var resultat = document.createElement("div");
+		resultat.classList.add("commentaires");
+		resultat.classList.add("clicables");
+		let nouveau = resultat.appendChild(document.createElement("span"));
+		let input = nouveau.appendChild(document.createElement("input"));
+		input.setAttribute("placeholder", "Nouveau commentaire");
+		for (let k in this.commentaires) {
+			let span = resultat.appendChild(document.createElement("span"));
+			span.setAttribute("id", k);
+			span.innerHTML = this.commentaires[k];
+		}
+		return resultat;
+	}
 	valeurCriteres() {
 		var resultat = 0;
 		for (let k in this._criteres) {
@@ -63,29 +138,30 @@ class Critere {
 		}
 		return resultat;
 	}
-	echelle(nbVals, max) {
+	echelle(max, nbVals) {
+		nbVals = nbVals || max;
 		var taux = (max / nbVals - 1) * (5 / 3) + 1;
 		taux = 1 / Math.min(1.5, taux);
 		var resultat = [];
 		for (let i = 0; i <= nbVals; i += 1) {
-			resultat.push(Math.round(max*Math.pow(i / nbVals, taux)));
+			resultat.push(Math.round(max * Math.pow(i / nbVals, taux)));
 		}
 		return resultat;
 	}
 	ajouterCritere(critere, id) {
-		if (!(critere instanceof Critere)) {
-			critere = Critere.fromObject(critere);
+			if (!(critere instanceof Critere)) {
+				critere = Critere.fromObject(critere);
+			}
+			critere.id = id || critere.id;
+			this.criteres[critere.id] = critere;
+			critere.critereParent = this;
+			return critere;
 		}
-		critere.id = id || critere.id;
-		this.criteres[critere.id] = critere;
-		critere.critereParent = this;
-		return critere;
-	}
-	/**
-	 * Remplit l'instance des informations provenant d'un objet générique
-	 * @param   {object}  obj L'objet contenant les données
-	 * @returns {Critere} this
-	 */
+		/**
+		 * Remplit l'instance des informations provenant d'un objet générique
+		 * @param   {object}  obj L'objet contenant les données
+		 * @returns {Critere} this
+		 */
 	fill(obj) {
 		if (typeof obj !== "object") {
 			return this;
@@ -127,14 +203,20 @@ class Critere {
 		label.classList.add("label");
 		label.innerHTML = this.constructor.label(champ);
 		if (contenu === undefined) {
-			contenu = this[champ];
+			if (this["dom_" + champ] !== undefined) {
+				contenu = this["dom_" + champ]();
+			} else if (this[champ] !== undefined) {
+				contenu = this[champ];
+			} else {
+				contenu = champ;
+			}
 		}
 		if (contenu instanceof HTMLElement) {
 			resultat.appendChild(contenu);
-			return resultat;
+		} else {
+			var span = resultat.appendChild(document.createElement("span"));
+			span.innerHTML = contenu;
 		}
-		var span = resultat.appendChild(document.createElement("span"));
-		span.innerHTML = contenu;
 		return resultat;
 	}
 	html_criteres() {
@@ -144,6 +226,9 @@ class Critere {
 			resultat.appendChild(this._criteres[k].dom);
 		}
 		return resultat;
+	}
+	activer() {
+		debugger;
 	}
 	/**
 	 * Retourne un nouvel objet avec les propriétés données sous d'objet
@@ -162,7 +247,13 @@ class Critere {
 			criteres: "Critères",
 			valeur: "Valeur"
 		};
-
+		this.prototype.evt = {
+			input_resultat: {
+				focus: function () {
+					this.obj.activer();
+				}
+			}
+		}
 	}
 }
 Critere.init();

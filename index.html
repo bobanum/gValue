@@ -21,8 +21,8 @@
 //			evaluation.load(function () {
 //				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
 //			});
-			var evaluation = Evaluation.load("web1/A2017/projetsynthese", function () {
-				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
+			GValue.evaluation = Evaluation.load("web1/A2017/projetsynthese", function () {
+				document.querySelector("div.interface>div.body>div.main").appendChild(GValue.evaluation.dom);
 			})
 
 			document.querySelector("div.interface>div.body>div.colonne").appendChild(Eleve.loadAll("web1", "A2017"));

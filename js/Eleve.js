@@ -1,6 +1,6 @@
 /*jslint esnext:true, browser:true*/
 /*exported Eleve*/
-/*global GValue*/
+/*global GValue, Resultat*/
 class Eleve {
 	constructor() {
 		this.matricule = "";
@@ -56,10 +56,15 @@ class Eleve {
 		});
 		return resultat;
 	}
-	chargerResultat(evaluation) {
+	loadResultat(evaluation, callback) {
 		evaluation = evaluation || GValue.evaluation;
-		GValue.callApi({action: "loadResultat", path: evaluation.path, eleve: this.matricule}, function () {
-			debugger;
+		return Resultat.load(evaluation, this, function (json) {
+			Resultat.dom_identification.nom.innerHTML = this.eleve.nom;
+			Resultat.dom_identification.prenom.innerHTML = this.eleve.prenom;
+			Resultat.dom_identification.matricule.innerHTML = this.eleve.matricule;
+			if (callback) {
+				callback.call(this, json);
+			}
 		});
 	}
 	static html_selectEleve(eleves) {
@@ -100,11 +105,29 @@ class Eleve {
 		});
 		return conteneur;
 	}
+	static getEleve(matricule, groupe) {
+		groupe = groupe || this.eleves;
+		if (groupe[matricule]) {
+			return groupe[matricule];
+		}
+		for (let k in groupe) {
+			if (typeof groupe[k] === "object") {
+				return this.getEleve(matricule, groupe[k]);
+			}
+		}
+		return null;
+	}
+	static load(matricule, callback) {
+		var eleve = this.getEleve(matricule);
+		return eleve;
+	}
 	static init() {
 		this.evt = {
 			selectEleve: {
 				change: function () {
-					this.selectedOptions[0].obj.chargerResultat();
+					this.selectedOptions[0].obj.loadResultat(GValue.evaluation, function () {
+						this.appliquer();
+					});
 				}
 			}
 		};

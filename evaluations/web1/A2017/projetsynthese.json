@@ -1,5 +1,5 @@
 {
-	"annee": "2015",
+	"annee": "2017",
 	"cours": "Intégration Web I",
 	"titre": "Projet synthèse",
 	"valeur": 20,
@@ -11,7 +11,9 @@
 			"criteres": {
 				"bpgfrljudgjxg": {
 					"valeur": 15,
-					"titre": "Visuel et effort"
+					"type": "echelle10",
+					"titre": "Visuel et effort",
+					"commentaires": {"bpgfrljudgjxh":"Excellent"}
 				},
 				"bpgfrguuwqlwy": {
 					"valeur": null,
@@ -24,30 +26,37 @@
 						},
 						"bpgfrguuwqaey": {
 							"valeur": 6,
+							"type": "echelle",
 							"titre": "Utilisation variées des propriétés CSS (complexité)."
 						},
 						"bpgfrguuwrgou": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "Largeur. La page est visible dans une interface de 1024&nbsp;pixels de largeur."
 						},
 						"bpgfrguuwopgy": {
 							"valeur": 1,
+							"type": "choix:Absent|Présent",
 							"titre": "Interface centrée"
 						},
 						"bpgfrguuwpflq": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Interface constante pour toutes les pages"
 						},
 						"bpgfrguuwpzvc": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Menu réagit à la souris"
 						},
 						"bpgfrguuwshlw": {
 							"valeur": 1,
+							"type": "choix:Absent|Présent",
 							"titre": "Élément courant du menu mis en évidence"
 						},
 						"bpgfrguuwpvao": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "Image en arrière-plan (background-image)"
 						}
 					}
@@ -58,30 +67,37 @@
 					"criteres": {
 						"bpgfrljudjufw": {
 							"valeur": 8,
+							"type": "echelle",
 							"titre": "Utilisation des balises de structure"
 						},
 						"bpgfrguuwqsom": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Utilisation d'une liste pour le menu"
 						},
 						"bpgfrguuwqcku": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Découpage constant pour toutes les pages"
 						},
 						"bpgfrguuwpsmi": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "Logo PNG avec transparence ; mène vers la page d'accueil."
 						},
 						"bpgfrguuwqbky": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "Copyright"
 						},
 						"bpgfrguuwngmi": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "Publicité obligatoire"
 						},
 						"bpgfrguuwsurg": {
 							"valeur": 2,
+							"type": "choix:Absent|Partiel|Présent",
 							"titre": "2 autres publicités; format standard"
 						},
 						"bpgfriqcfxsks": {
@@ -90,22 +106,27 @@
 							"criteres": {
 								"bpgfrljudjnes": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Formulaire présent"
 								},
 								"bpgfriqcghdym": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Sur toutes les pages"
 								},
 								"bpgfriqcgddga": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Pointe vers Google"
 								},
 								"bpgfriqcggulc": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Fait une recherche (champ q)"
 								},
 								"bpgfriqcggqbw": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Recherche dans le bon site (champ caché)"
 								}
 							}
@@ -116,14 +137,17 @@
 							"criteres": {
 								"bpgfrljudiwqy": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Présente au moins 3 nouvelles"
 								},
 								"bpgfriqcgfwge": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Sur toutes les pages"
 								},
 								"bpgfriqcgdfie": {
 									"valeur": 1,
+									"type": "choix:Non|Oui",
 									"titre": "Disposée en colonne"
 								}
 							}
@@ -136,22 +160,27 @@
 					"criteres": {
 						"bpgfrljudhviu": {
 							"valeur": 8,
+							"type": "echelle",
 							"titre": "Découpage sémantique : bonne utilisation des balises p, h1, h2..."
 						},
 						"bpgfriqcggqrq": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Découpage constant pour toutes les pages"
 						},
 						"bpgfriqcgdwwo": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Liens avec adresse plausible (pas de href vide ou de dièze)"
 						},
 						"bpgfriqcgfeua": {
 							"valeur": 3,
+							"type": "echelle",
 							"titre": "Image avec légende"
 						},
 						"bpgfriqcgfppq": {
 							"valeur": 5,
+							"type": "echelle",
 							"titre": "Page d'accueil"
 						},
 						"bpgfriqcgdlys": {
@@ -160,7 +189,7 @@
 							"criteres": {
 								"bpgfrljudjayy": {
 									"valeur": 1,
-									"titre": "Présente"
+									"type": "choix:Non|Oui",									"titre": "Présente"
 								},
 								"bpgfriqcghuce": {
 									"valeur": 1,
@@ -168,6 +197,7 @@
 								},
 								"bpgfrjznqujim": {
 									"valeur": 3,
+									"type": "echelle",
 									"titre": "Structure et mise en page adéquate"
 								}
 							}
@@ -176,6 +206,7 @@
 				},
 				"bpgfrjznqtkzw": {
 					"valeur": 5,
+					"type": "echelle",
 					"titre": "Publication"
 				}
 			}
