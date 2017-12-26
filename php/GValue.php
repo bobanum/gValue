@@ -3,60 +3,58 @@ class GValue {
 	static $path_evaluations = "evaluations";
 	static $path_resultats = "resultats";
 	static function traitement() {
-		if (isset($_GET["action"])) {
-			if ($_GET["action"] === "listeEvaluations") {
-				self::outputJson(self::getFolders("evaluations"));
-			} elseif ($_GET["action"] === "loadEvaluation") {
-				$path = self::$path_evaluations;
-				if (isset($_GET["path"])) {
-					$path .= "/" . $_GET['path'];
-				} else {
-					$path .= "/" . $_GET['cours'];
-					if (!file_exists($path)) {
-						self::outputJson(["erreur" => "Cours '{$_GET['cours']}' inexistant."]);
-					}
-					$path .= "/" . $_GET['annee'];
-					if (!file_exists($path)) {
-						self::outputJson(["erreur" => "Année '{$_GET['annee']}' inexistante."]);
-					}
-					$path .= "/" . $_GET['evaluation'];
+		if (isset($_POST["action"])) {
+			$action = $_POST["action"];
+			if ($action === "saveResultat") {
+				self::verifierDonnees($_POST, ['cours', 'annee', 'evaluation', 'matricule', 'json']);
+				$path = self::$path_resultats;
+				$path = self::creerPath("{$path}/{$_POST['cours']}/{$_POST['annee']}/{$_POST['evaluation']}");
+				$path = "{$path}/{$_POST['matricule']}.json";
+				if (file_exists($path)) {
+					rename($path, substr($path, 0, -5).time().".bak");
 				}
-				$path .= ".json";
+				file_put_contents($path, $_POST['json']);
+				self::outputJson(["resultat"=>"ok"]);
+			}
+		} elseif (isset($_GET["action"])) {
+			$action = $_GET["action"];
+			if ($action === "listeEvaluations") {
+				self::outputJson(self::getFolders("evaluations"));
+			} elseif ($action === "loadEvaluation") {
+				self::verifierDonnees($_GET, ['cours', 'annee', 'evaluation']);
+				$path = self::$path_evaluations;
+				$path = "{$path}/{$_GET['cours']}/{$_GET['annee']}/{$_GET['evaluation']}.json";
 				if (!file_exists($path)) {
-					self::outputJson(["erreur" => "Évaluation '{$_GET['evaluation']}' inexistante."]);
+					self::outputJson(["erreur" => "Évaluation '{$_GET['evaluation']}' inexistante. [{$path}]"]);
 				}
 				self::outputJson(file_get_contents($path));
-			} elseif ($_GET["action"] === "listeEleves") {
+			} elseif ($action === "listeEleves") {
+				self::verifierDonnees($_GET, ['cours', 'annee']);
 				$path = self::$path_evaluations;
-				if (isset($_GET["path"])) {
-					$path .= "/" . $_GET['path'];
-				} else {
-					$path .= "/" . $_GET['cours'];
-					if (!file_exists($path)) {
-						self::outputJson(["erreur" => "Cours '{$_GET['cours']}' inexistant."]);
-					}
-					$path .= "/" . $_GET['annee'];
-					if (!file_exists($path)) {
-						self::outputJson(["erreur" => "Année '{$_GET['annee']}' inexistante."]);
-					}
-				}
-				$path .= "/eleves.json";
+				$path = "{$path}/{$_GET['cours']}/{$_GET['annee']}/eleves.json";
 				if (!file_exists($path)) {
-					var_export($_GET);
 					self::outputJson(["erreur" => "Élèves inexistants [{$path}]."]);
 				}
 				self::outputJson(file_get_contents($path));
-			} elseif ($_GET["action"] === "loadResultat") {
+			} elseif ($action === "loadResultat") {
 				self::verifierDonnees($_GET, ['path', 'matricule']);
-				$path = self::$path_resultats . "/" . $_GET["path"] . "/" . $_GET["matricule"] . ".json";
+				$path = self::$path_resultats;
+				$path = "{$path}/{$_GET["path"]}/{$_GET["matricule"]}.json";
 				if (file_exists($path)) {
 					self::outputJson(file_get_contents($path));
 				} else {
 					self::outputJson('{}');
 				}
 			}
-			self::outputJson(['erreur'=>"Action '{$_GET["action"]}' invalide."]);
+			self::outputJson(['erreur'=>"Action '{$action}' invalide."]);
 		}
+	}
+	static function creerPath($path) {
+		if (!file_exists($path)) {
+			self::creerPath(dirname($path));
+			mkdir($path, basename($path));
+		}
+		return $path;
 	}
 	static function getFolders($path, $depth=-1) {
 		$files = glob($path."/*");

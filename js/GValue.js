@@ -14,6 +14,32 @@ class GValue extends App {
 		xhr.send(null);
 		return xhr;
 	}
+	static callApiPost(data, callback, thisArg) {
+		thisArg = thisArg || this;
+		var xhr = new XMLHttpRequest();
+		xhr.open("post", "api.php");
+		xhr.responseType = "json";
+		xhr.obj = this;
+		xhr.addEventListener("load", function () {
+			callback.call(thisArg, this.response);
+		});
+		if (typeof data === "object") {
+			data = this.formData(data);
+		}
+		xhr.send(data);
+		return xhr;
+	}
+	static formData(data) {
+		var resultat = new FormData();
+		for (let k in data) {
+			let d = data[k];
+			if (typeof d !== "string") {
+				d = JSON.stringify(d);
+			}
+			resultat.append(k, d);
+		}
+		return resultat;
+	}
 	static urlEncode(data) {
 		var resultat;
 		if (!data) {
@@ -37,6 +63,7 @@ class GValue extends App {
 		return resultat;
 	}
 	static loadEvaluations(callback) {
+		//TODO Utiliser callApi
 		var xhr = new XMLHttpRequest();
 		xhr.open("get", "api.php?action=listeEvaluations");
 		xhr.responseType = "json";
@@ -48,6 +75,7 @@ class GValue extends App {
 		return xhr;
 	}
 	static loadEvaluation(cours, annee, evaluation, callback) {
+		//TODO Utiliser callApi
 		var xhr = new XMLHttpRequest();
 		xhr.open("get", "api.php?action=loadEvaluation&cours="+cours+"&annee="+annee+"&evaluation="+evaluation+"");
 		xhr.responseType = "json";

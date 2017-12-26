@@ -1,11 +1,10 @@
 /*jslint browser:true, esnext:true*/
-/*global GValue, Critere, Resultat*/
+/*global Menu, GValue, Critere, Resultat*/
 class Evaluation extends Critere {
 	constructor() {
 		super();
 		this.cours = "";
 		this.annee = "";
-		this.id = "";
 	}
 	get dom() {
 		if (!this._dom) {
@@ -14,16 +13,33 @@ class Evaluation extends Critere {
 		}
 		return this._dom;
 	}
-	get path() {
-		return this.cours + "/" + this.annee + "/" + this.id;
+	get coursId() {
+		return GValue.normaliserId(this.cours);
+	}
+	get anneeId() {
+		return GValue.normaliserId(this.annee);
+	}
+	get titreId() {
+		return GValue.normaliserId(this.titre);
 	}
 	dom_creer() {
-		var resultat = document.createElement("div");
+		var resultat = document.createElement("fieldset");
 		resultat.classList.add("evaluation");
+		resultat.disabled = true;
 		if (GValue.mode === GValue.MODE_EVALUATION) {
 			resultat.appendChild(Resultat.dom_identification);
 		}
+		resultat.appendChild(this.dom_options());
 		resultat.appendChild(Critere.prototype.dom_creer.call(this));
+		return resultat;
+	}
+	dom_options() {
+		var resultat;
+		resultat = Menu.dom_toolbar({
+			save: Resultat.evt.save.click,
+			cancel: Resultat.evt.cancel.click
+		});
+		resultat.classList.add("options");
 		return resultat;
 	}
 	html_details() {
@@ -35,7 +51,13 @@ class Evaluation extends Critere {
 		return resultat;
 	}
 	load(callback) {
-		GValue.callApi({action:"loadEvaluation", path: this.path}, function (json) {
+		var data = {
+			action: "loadEvaluation",
+			cours: this.coursId,
+			annee: this.anneeId,
+			evaluation: this.titreId
+		};
+		GValue.callApi(data, function (json) {
 			this.fill(json);
 			if (callback) {
 				callback.call(this, json);
@@ -43,9 +65,21 @@ class Evaluation extends Critere {
 		}, this);
 		return this;
 	}
-	static load(path, callback) {
+	toJson() {
+		var resultat = Critere.prototype.toJson.call(this);
+		resultat.cours = this.cours;
+		resultat.annee = this.annee;
+		return resultat;
+	}
+	static load(cours, annee, evaluation, callback) {
 		var resultat = new Evaluation();
-		GValue.callApi({action:"loadEvaluation", path: path}, function (json) {
+		var data = {
+			action: "loadEvaluation",
+			cours: GValue.normaliserId(cours),
+			annee: GValue.normaliserId(annee),
+			evaluation: GValue.normaliserId(evaluation)
+		};
+		GValue.callApi(data, function (json) {
 			this.fill(json);
 			if (callback) {
 				callback.call(this, json);

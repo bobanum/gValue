@@ -5,7 +5,10 @@
 	<meta charset="UTF-8" />
 	<link rel="icon" href="favicon.png">
 	<link rel="stylesheet" href="css/gvalue.css" />
+	<link rel="stylesheet" href="images/css/iconesgvalue.css" />
+	<script src="jsapp/DOMObject.js"></script>
 	<script src="jsapp/App.js"></script>
+	<script src="jsmenu/Menu.js"></script>
 	<script src="js/GValue.js"></script>
 	<script src="js/Critere.js"></script>
 	<script src="js/Evaluation.js"></script>
@@ -21,7 +24,7 @@
 //			evaluation.load(function () {
 //				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
 //			});
-			GValue.evaluation = Evaluation.load("web1/A2017/projetsynthese", function () {
+			GValue.evaluation = Evaluation.load("web1", "A2017", "projetsynthese", function () {
 				document.querySelector("div.interface>div.body>div.main").appendChild(GValue.evaluation.dom);
 			})
 

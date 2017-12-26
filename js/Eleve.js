@@ -67,6 +67,14 @@ class Eleve {
 			}
 		});
 	}
+	toJson() {
+		var resultat = {};
+		resultat.matricule = this.matricule;
+		resultat.nom = this.nom;
+		resultat.prenom = this.prenom;
+		resultat.groupe = this.groupe;
+		return resultat;
+	}
 	static html_selectEleve(eleves) {
 		eleves = eleves || this.eleves || {};
 		var resultat = document.createElement("select");
@@ -93,10 +101,12 @@ class Eleve {
 		conteneur.classList.add("eleves");
 		var titre = conteneur.appendChild(document.createElement("h1"));
 		titre.innerHTML = "Les élèves";
-		GValue.callApi({
+		var data = {
 			action: "listeEleves",
-			path: cours + "/" + annee
-		}, function (json) {
+			cours: cours,
+			annee: annee
+		};
+		GValue.callApi(data, function (json) {
 			Eleve.eleves = json;
 			conteneur.appendChild(Eleve.html_selectEleve());
 			if (callback) {
@@ -126,6 +136,7 @@ class Eleve {
 			selectEleve: {
 				change: function () {
 					this.selectedOptions[0].obj.loadResultat(GValue.evaluation, function () {
+						GValue.resultat = this;
 						this.appliquer();
 					});
 				}
