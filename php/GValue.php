@@ -37,9 +37,9 @@ class GValue {
 				}
 				self::outputJson(file_get_contents($path));
 			} elseif ($action === "loadResultat") {
-				self::verifierDonnees($_GET, ['path', 'matricule']);
+				self::verifierDonnees($_GET, ['cours', 'annee', 'evaluation', 'matricule']);
 				$path = self::$path_resultats;
-				$path = "{$path}/{$_GET["path"]}/{$_GET["matricule"]}.json";
+				$path = "{$path}/{$_GET['cours']}/{$_GET['annee']}/{$_GET['evaluation']}/{$_GET["matricule"]}.json";
 				if (file_exists($path)) {
 					self::outputJson(file_get_contents($path));
 				} else {

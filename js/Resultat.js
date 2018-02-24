@@ -124,8 +124,15 @@ class Resultat {
 			}
 		}, this);
 	}
+	vider() {
+		for (let k in this._criteres) {
+			this.valeur(k, "");
+		}
+		return this;
+	}
 	appliquer() {
 		this.evaluation.dom.disabled = false;
+
 		console.log("On doit appliquer le resultat à l'évaluation");
 	}
 	save() {
@@ -153,6 +160,9 @@ class Resultat {
 		return resultat;
 	}
 	static load(evaluation, eleve, callback) {
+		if (GValue.resultat) {
+			GValue.resultat.vider();
+		}
 		var matricule = eleve.matricule || eleve;
 		var resultat = new this();
 		resultat.eleve = eleve;//TODO Voir l'utilité
@@ -183,7 +193,7 @@ class Resultat {
 			},
 			cancel: {
 				click: function () {
-	//				alert("click");
+					GValue.resultat.vider();
 				}
 			}
 		};

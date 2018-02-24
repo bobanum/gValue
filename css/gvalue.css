@@ -322,7 +322,7 @@ section.eleves > h1 {
 }
 section.eleves > select {
   font: inherit;
-  flex: 1 1 auto;
+  flex: 0 0 80vh;
 }
 span[data-valeur]:after {
   content: "\A0[" attr(data-valeur) "]";

@@ -17,7 +17,7 @@ class Eleve {
 			e.stopPropagation();
 			e.cancelBubble = true;
 			return false;
-		}, true);
+		});
 		resultat.obj = this;
 		return resultat;
 	}
