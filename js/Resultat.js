@@ -234,6 +234,27 @@ class Resultat_Critere {
 			this._commentaires[k] = val[k];
 		}
 	}
+	dom_valeur() {
+		var resultat;
+		resultat = document.createElement("span");
+		if (this.modeEval) {
+			let input = resultat.appendChild(document.createElement("input"));
+			input.setAttribute("type", "text");
+			input.setAttribute("id", "resultat_" + this.eleve.id + "_" + this.critere.id);
+			input.setAttribute("tabindex", 1);
+			Critere.addEventListeners(input, this.evt.input_resultat);
+			//			input.addEventListener("focus", this.evt.input_resultat.focus);
+			//			input.addEventListener("blur", this.evt.input_resultat.blur);
+			input.obj = this;
+			let span = resultat.appendChild(document.createElement("span"));
+			span.innerHTML = "/" + this.valeur;
+		} else {
+			let input = resultat.appendChild(document.createElement("input"));
+			input.setAttribute("type", "text");
+			input.setAttribute("value", this.valeur);
+		}
+		return resultat;
+	}
 	toJson() {
 		var resultat = {};
 		resultat.id = this.id;

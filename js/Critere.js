@@ -7,6 +7,7 @@ class Critere {
 		this._valeur = "";
 		this._commentaires = {};
 		this._criteres = {};
+		this._resultats = {};
 		this.critereParent = null;
 	}
 	get dom() {
@@ -58,22 +59,25 @@ class Critere {
 	dom_valeur() {
 		var resultat;
 		resultat = document.createElement("span");
-		if (this.modeEval) {
-			let input = resultat.appendChild(document.createElement("input"));
-			input.setAttribute("type", "text");
-			input.setAttribute("id", "resultat_" + this.id);
-			input.setAttribute("tabindex", 1);
-			Critere.addEventListeners(input, this.evt.input_resultat);
-			//			input.addEventListener("focus", this.evt.input_resultat.focus);
-			//			input.addEventListener("blur", this.evt.input_resultat.blur);
-			input.obj = this;
-			let span = resultat.appendChild(document.createElement("span"));
-			span.innerHTML = "/" + this.valeur;
-		} else {
-			let input = resultat.appendChild(document.createElement("input"));
-			input.setAttribute("type", "text");
-			input.setAttribute("value", this.valeur);
+		for (let r in this._resultats) {
+			resultat.appendChild(this._resultats[r].dom_valeur);
 		}
+//		if (this.modeEval) {
+//			let input = resultat.appendChild(document.createElement("input"));
+//			input.setAttribute("type", "text");
+//			input.setAttribute("id", "resultat_" + this.id);
+//			input.setAttribute("tabindex", 1);
+//			Critere.addEventListeners(input, this.evt.input_resultat);
+//			//			input.addEventListener("focus", this.evt.input_resultat.focus);
+//			//			input.addEventListener("blur", this.evt.input_resultat.blur);
+//			input.obj = this;
+//			let span = resultat.appendChild(document.createElement("span"));
+//			span.innerHTML = "/" + this.valeur;
+//		} else {
+//			let input = resultat.appendChild(document.createElement("input"));
+//			input.setAttribute("type", "text");
+//			input.setAttribute("value", this.valeur);
+//		}
 		return resultat;
 	}
 	html_echelle(max, nbVals) {
