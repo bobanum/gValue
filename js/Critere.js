@@ -64,8 +64,8 @@ class Critere {
 			input.setAttribute("id", "resultat_" + this.id);
 			input.setAttribute("tabindex", 1);
 			Critere.addEventListeners(input, this.evt.input_resultat);
-//			input.addEventListener("focus", this.evt.input_resultat.focus);
-//			input.addEventListener("blur", this.evt.input_resultat.blur);
+			//			input.addEventListener("focus", this.evt.input_resultat.focus);
+			//			input.addEventListener("blur", this.evt.input_resultat.blur);
 			input.obj = this;
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = "/" + this.valeur;
@@ -178,19 +178,19 @@ class Critere {
 		return resultat;
 	}
 	ajouterCritere(critere, id) {
-			if (!(critere instanceof Critere)) {
-				critere = Critere.fromObject(critere);
-			}
-			critere.id = id || critere.id;
-			this.criteres[critere.id] = critere;
-			critere.critereParent = this;
-			return critere;
+		if (!(critere instanceof Critere)) {
+			critere = Critere.fromObject(critere);
 		}
-		/**
-		 * Remplit l'instance des informations provenant d'un objet générique
-		 * @param   {object}  obj L'objet contenant les données
-		 * @returns {Critere} this
-		 */
+		critere.id = id || critere.id;
+		this.criteres[critere.id] = critere;
+		critere.critereParent = this;
+		return critere;
+	}
+	/**
+	 * Remplit l'instance des informations provenant d'un objet générique
+	 * @param   {object}  obj L'objet contenant les données
+	 * @returns {Critere} this
+	 */
 	fill(obj) {
 		if (typeof obj !== "object") {
 			return this;
@@ -265,10 +265,10 @@ class Critere {
 	}
 	choisir(obj) {
 		var choix = [].slice.call(obj.parentNode.children, 0);
-		choix.forEach(e=>e.classList.remove("checked"));
+		choix.forEach(e => e.classList.remove("checked"));
 		obj.classList.add("checked");
 		GValue.resultat.valeur(this.id, obj.innerHTML);
-//		this.dom.querySelector("input").value = obj.innerHTML;
+		//		this.dom.querySelector("input").value = obj.innerHTML;
 		this.activerProchain();
 	}
 	html_criteres() {
@@ -285,7 +285,7 @@ class Critere {
 			prochain = this.dom.nextElementSibling.obj;
 		} else {
 			prochain = this.critereParent.dom.nextElementSibling.obj;
-//			debugger;
+			//			debugger;
 		}
 		if (prochain) {
 			prochain.courant(true);
@@ -302,7 +302,7 @@ class Critere {
 	}
 	courant(etat) {
 		var courants = document.querySelectorAll('.courant');
-		courants.forEach((c)=>c.classList.remove("courant"));
+		courants.forEach((c) => c.classList.remove("courant"));
 		if (etat === undefined) {
 			this.dom.classList.toggle("courant");
 		} else if (etat) {
@@ -312,11 +312,60 @@ class Critere {
 		}
 		var courant = document.querySelector('.courant');
 		if (courant) {
-			var haut = (window.innerHeight-courant.clientHeight)*(1/3);
+			var haut = (window.innerHeight - courant.clientHeight) * (1 / 3);
 			haut = Math.max(haut, 0);
-			window.scrollTo(0, courant.offsetTop - 20 - haut);
+			this.animer([0, window.scrollY], [0, courant.offsetTop - 20 - haut], 200, function (x, y) {
+				window.scrollTo(x, y);
+			});
+			//			var anim = {};
+			//			anim.temps = {};
+			//			anim.temps.debut = new Date().getTime();
+			//			anim.temps.delta = 100;
+			//			anim.temps.fin = anim.temps.debut + anim.temps.delta;
+			//			anim.etat = {};
+			//			anim.etat.debut = window.scrollY;
+			//			anim.etat.fin = courant.offsetTop - 20 - haut;
+			//			anim.etat.delta = anim.etat.fin - anim.etat.debut;
+			//			anim.interval;
+			//			var anim.interval = window.setInterval(function () {
+			//				var t = new Date().getTime();
+			//				var dt = t - anim.temps.debut;
+			//				var de = (dt / anim.temps.delta) * anim.etat.delta;
+			//				var e = anim.etat.debut + de;
+			//				window.scrollTo(0, e);
+			//				if (t > anim.temps.fin) {
+			//					window.clearInterval(iii);
+			//				}
+			//			}, 10);
 		}
 		return this.estCourant();
+	}
+	animer(debut, fin, duree, callback) {
+		var anim = {};
+		anim.temps = {};
+		anim.temps.debut = new Date().getTime();
+		anim.temps.delta = duree;
+		anim.temps.fin = anim.temps.debut + anim.temps.delta;
+		anim.etat = {};
+		anim.etat.debut = debut;
+		anim.etat.fin = fin;
+		anim.etat.delta = anim.etat.fin - anim.etat.debut;
+		anim.interval = window.setInterval(function () {
+			var t = new Date().getTime();
+			var ratio = (t - anim.temps.debut) / anim.temps.delta;
+			var e;
+			if (anim.etat.fin instanceof Array) {
+				e = anim.etat.fin.map((e, i) => anim.etat.debut[i] + ratio * (anim.etat.fin[i] - anim.etat.debut[i]));
+				callback.apply(this, e);
+			} else {
+				e = anim.etat.debut + ratio * (anim.etat.fin - anim.etat.debut);
+				callback.call(this, e);
+			}
+			if (t > anim.temps.fin) {
+				window.clearInterval(anim.interval);
+			}
+		}, 10);
+
 	}
 	estCourant() {
 		return this.dom.classList.contains("courant");
@@ -342,10 +391,10 @@ class Critere {
 		};
 		this.prototype.evt = {
 			input_resultat: {
-				focus: function (/*e*/) {
-//					if (e.currentTarget.obj !== e.relatedTarget.obj) {
-						this.obj.courant(true);
-//					}
+				focus: function ( /*e*/ ) {
+					//					if (e.currentTarget.obj !== e.relatedTarget.obj) {
+					this.obj.courant(true);
+					//					}
 				},
 				blur: function (e) {
 					if (e.relatedTarget && e.relatedTarget.obj && e.currentTarget.obj !== e.relatedTarget.obj) {

@@ -1,0 +1,298 @@
+{
+	"annee": "2017",
+	"cours": "Intégration Web III",
+	"valeur": 20,
+	"titre": "Projet 1&nbsp;: &quot;Recettes&quot;",
+	"criteres": {
+		"bpgfrljudsbga": {
+			"titre": "Executions",
+			"criteres": {
+				"bpgfrljudgjxg": {
+					"titre": "Global",
+					"valeur": 5,
+					"type": "echelle"
+				}
+			}
+		},
+		"bpgfrljudgjxh": {
+			"titre": "Pages",
+			"criteres": {
+				"bpgfrguuwqlwy": {
+					"titre": "Général",
+					"criteres": {
+						"bpgfrljudhvfc": {
+							"titre": "2 inclusions",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwqaey": {
+							"titre": "Entete et pied de page",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwrgou": {
+							"titre": "Affichage Ariane",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwopgy": {
+							"titre": "Affichage article",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrguuwpflq": {
+					"titre": "Page &quot;index.php&quot;",
+					"criteres": {
+						"bpgfrguuwpzvc": {
+							"titre": "Récupération des données",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrguuwshlw": {
+					"titre": "Page &quot;categorie.php&quot;",
+					"criteres": {
+						"bpgfrguuwpvao": {
+							"titre": "Récupération de nomCategorie avec redirection",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwnjzq": {
+							"titre": "Récupération de la catégorie avec redirection",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrljudjufw": {
+							"titre": "Affichage du titre",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrguuwqsom": {
+					"titre": "Page &quot;recette.php&quot;",
+					"criteres": {
+						"bpgfrguuwqcku": {
+							"titre": "Récupération de nomCategorie avec redirection",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwpsmi": {
+							"titre": "Récupération de idRecette avec redirection",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwqbky": {
+							"titre": "Récupération de la recette avec redirection",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrguuwngmi": {
+							"titre": "Utilisation de trouverRecette",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				}
+			}
+		},
+		"bpgfrguuwsurg": {
+			"titre": "classe &quot;Recette&quot;",
+			"criteres": {
+				"bpgfriqcfxsks": {
+					"titre": "Général",
+					"criteres": {
+						"bpgfrljudjnes": {
+							"titre": "Prototypes des méthodes",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfriqcghdym": {
+							"titre": "Utilisation des paramètres (pas de $_GET ou de $donnees);",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfriqcgddga": {
+							"titre": "Valeur de retour",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfriqcggulc": {
+					"titre": "Méthode &quot;fraction&quot;",
+					"criteres": {
+						"bpgfriqcggqbw": {
+							"titre": "Déjà faite",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfriqcgfbem": {
+					"titre": "Méthode &quot;trouverRecette&quot;",
+					"criteres": {
+						"bpgfrljudiwqy": {
+							"titre": "Faite en classe",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfriqcgfwge": {
+					"titre": "Méthode &quot;ariane&quot;",
+					"criteres": {
+						"bpgfriqcgdfie": {
+							"titre": "Conditionnelles",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfriqcgedtg": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrljudhviu": {
+					"titre": "Méthode &quot;image&quot;",
+					"criteres": {
+						"bpgfriqcggqrq": {
+							"titre": "Conditionnelle",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfriqcgdwwo": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfriqcgfeua": {
+					"titre": "Méthode &quot;lien&quot;",
+					"criteres": {
+						"bpgfriqcgfppq": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfriqcgdlys": {
+							"titre": "Utilisation de la méthode &quot;image&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrljudjayy": {
+					"titre": "Méthode &quot;ingredients&quot;",
+					"criteres": {
+						"bpgfriqcghuce": {
+							"titre": "Boucle",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznqujim": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznqtkzw": {
+							"titre": "Utilisation de la méthode &quot;fraction&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrljudsbgb": {
+					"titre": "Méthode &quot;instructions&quot;",
+					"criteres": {
+						"bpgfrljudihqo": {
+							"titre": "Boucle",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrljudjscm": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrjznqwske": {
+					"titre": "Méthode &quot;listeRecettes&quot;",
+					"criteres": {
+						"bpgfrjznqybrc": {
+							"titre": "Boucle",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznqxbrk": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznqtgui": {
+							"titre": "Utilisation de la méthode &quot;lien&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrjznqtigm": {
+					"titre": "Méthode &quot;listeCategories&quot;",
+					"criteres": {
+						"bpgfrjznqwaia": {
+							"titre": "Boucle",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznrbnoi": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrljudirzc": {
+							"titre": "Utilisation de la méthode &quot;listeRecettes&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrjznqzcrw": {
+					"titre": "Méthode &quot;articleRecette&quot;",
+					"criteres": {
+						"bpgfrjznqzpeu": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrjznrearw": {
+							"titre": "Utilisation des méthodes &quot;listeRecettes&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				},
+				"bpgfrjznrdaxc": {
+					"titre": "Méthode &quot;articleIndex&quot;",
+					"criteres": {
+						"bpgfrjznqzwou": {
+							"titre": "Composition du HTML",
+							"valeur": 5,
+							"type": "echelle"
+						},
+						"bpgfrkdwtmelc": {
+							"titre": "Utilisation de la méthode &quot;listeCategories&quot;",
+							"valeur": 5,
+							"type": "echelle"
+						}
+					}
+				}
+			}
+		}
+	}
+}
