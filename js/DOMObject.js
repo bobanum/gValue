@@ -20,7 +20,7 @@ class DOMObject {
 			return this;
 		}
 		if (name instanceof Array) {
-			name.forEach((n)=>this.addEventListener(n, evt));
+			name.forEach((n) => this.addEventListener(n, evt));
 		} else {
 			this.dom.addEventListener(name, evt);
 		}
@@ -96,7 +96,7 @@ class DOMObject {
 	static init() {
 		this.addFacade(["setAttributes"]);
 		this.prototype.addFacade(["removeAttribute", "getAttribute", "setAttribute"]);
-//		this.addEventListener
+		//		this.addEventListener
 	}
 }
 DOMObject.init();

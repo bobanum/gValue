@@ -1,8 +1,6 @@
 /*jshint esnext:true, browser:true*/
 /*exported App*/
 class App {
-	constructor() {
-	}
 	static addDependency(url, attributes) {
 		var element, id;
 		id = url.replace(/[^a-zA-Z0-9\_\-\.]/g, "_");
@@ -29,7 +27,7 @@ class App {
 	 */
 	static setScriptPath() {
 		this.scriptURL = document.head.lastChild.getAttribute('src');
-		this.scriptPath = document.head.lastChild.getAttribute('src').split('/').slice(0,-1);
+		this.scriptPath = document.head.lastChild.getAttribute('src').split('/').slice(0, -1);
 		if (this.scriptPath.length === 0) {
 			this.scriptPath = ".";
 		} else {
@@ -51,7 +49,7 @@ class App {
 		try {
 			url = decodeURI(url);
 		} catch (err) {
-			url = url;
+			//url = url;
 		}
 		url = url.split("?");
 		if (url.length > 1) {
@@ -71,7 +69,7 @@ class App {
 	}
 	/**
 	 * Retourne un objet contenant les informations et données d'une adresse
-	 * @param   {string} url - L'adresse à analyser
+	 * @param   {string} urlSearch - L'adresse à analyser
 	 * @returns {object} - L'objet
 	 */
 	static parseSearch(urlSearch) {
@@ -86,7 +84,7 @@ class App {
 		try {
 			urlSearch = decodeURI(urlSearch);
 		} catch (err) {
-			urlSearch = urlSearch;
+			//urlSearch = urlSearch;
 		}
 		if (urlSearch[0] === "?") {
 			urlSearch = urlSearch.substr(1);
@@ -119,7 +117,7 @@ class App {
 		var resultat = new Date().getTime();
 		resultat = resultat * amplitude + Math.floor(Math.random() * amplitude);
 		var alpha = "0123456789abcdefghijklmnopqrstuvwxyz";
-		resultat = resultat.toString(26).split("").map(digit=>alpha[alpha.indexOf(digit)+10]).join("");
+		resultat = resultat.toString(26).split("").map(digit => alpha[alpha.indexOf(digit) + 10]).join("");
 		resultat = prefixe + resultat;
 		return resultat;
 	}
@@ -138,18 +136,16 @@ class App {
 			.replace(/^[^a-z0-9]+|_$/g, '');
 	}
 	static init() {
-//		var self = this;
 		this.dependencies = {};
 		this.setScriptPath();
-		var data=this.parseUrl(this.scriptURL).data;
+		var data = this.parseUrl(this.scriptURL).data;
 		for (let k in data) {
 			this.addDependency(k + ".js");
 		}
 		this.evt = {
 
 		};
-		window.addEventListener("load", function () {
-		});
+		window.addEventListener("load", function () {});
 	}
 }
 App.init();
