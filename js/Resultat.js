@@ -1,7 +1,9 @@
 /*jslint esnext:true, browser:true*/
-/*exported Resultat*/
-/*global Evaluation, GValue, Eleve, Critere*/
-class Resultat {
+import GValue from "./GValue.js";
+import Eleve from "./Eleve.js";
+import Evaluation from "./Evaluation.js";
+import Critere from "./Critere.js";
+export default class Resultat {
 	constructor() {
 		this._evaluation = null;
 		this._eleve = null;
@@ -188,7 +190,6 @@ class Resultat {
 			save: {
 				click: function () {
 					GValue.resultat.save();
-	//				alert("click");
 				}
 			},
 			cancel: {

@@ -1,8 +1,9 @@
 /*jslint browser:true, esnext:true*/
-/*global DOMObject, GValue*/
-class Critere {
+/*global App */
+import GValue from "./GValue.js";
+export default class Critere {
 	constructor() {
-		this.id = GValue.creerId();
+		this.id = App.creerId();
 		this.titre = "";
 		this._valeur = "";
 		this._commentaires = {};
@@ -41,7 +42,7 @@ class Critere {
 		this._valeur = val;
 	}
 	get modeEval() {
-		return GValue.mode === GValue.MODE_EVALUATION;
+		return App.mode === App.MODE_EVALUATION;
 	}
 	get length() {
 		return Object.keys(this.criteres).length;
@@ -63,7 +64,7 @@ class Critere {
 			input.setAttribute("type", "text");
 			input.setAttribute("id", "resultat_" + this.id);
 			input.setAttribute("tabindex", 1);
-			Critere.addEventListeners(input, this.evt.input_resultat);
+			App.addEventListeners(input, this.evt.input_resultat);
 			//			input.addEventListener("focus", this.evt.input_resultat.focus);
 			//			input.addEventListener("blur", this.evt.input_resultat.blur);
 			input.obj = this;
@@ -85,7 +86,7 @@ class Critere {
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = v;
 			span.obj = this;
-			Critere.addEventListeners(span, this.evt.choix);
+			App.addEventListeners(span, this.evt.choix);
 		}, this);
 		return resultat;
 	}
@@ -102,7 +103,7 @@ class Critere {
 			span.obj = this;
 			span.setAttribute("data-valeur", echelle[i]);
 			span.setAttribute("title", echelle[i]);
-			Critere.addEventListeners(span, this.evt.choix);
+			App.addEventListeners(span, this.evt.choix);
 		}, this);
 		return resultat;
 	}
@@ -114,7 +115,7 @@ class Critere {
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = v;
 			span.obj = this;
-			Critere.addEventListeners(span, evts);
+			App.addEventListeners(span, evts);
 		}, this);
 		return resultat;
 	}
@@ -381,8 +382,7 @@ class Critere {
 		return resultat;
 	}
 	static init() {
-		this.forEach = DOMObject.forEach;
-		this.addEventListeners = DOMObject.addEventListeners;
+		App.log("init", this.name);
 		this.labels = {
 			id: "Id",
 			titre: "Titre",

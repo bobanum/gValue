@@ -1,7 +1,6 @@
 /*jslint esnext:true, browser:true*/
-/*globals App, DOMObject*/
-/*exported Module*/
-class Module extends DOMObject {
+/*globals App*/
+export default class Module {
 	constructor() {
 		this._dom = null;
 	}
@@ -24,8 +23,8 @@ class Module extends DOMObject {
 		resultat.setAttribute("id", id);
 		resultat.setAttribute("type", "button");
 		resultat.setAttribute("value", value);
-		DOMObject.addEventListeners(resultat, evts);
-		DOMObject.setAttributes(resultat, attributes);
+		App.addEventListeners(resultat, evts);
+		App.setAttributes(resultat, attributes);
 		return resultat;
 	}
 	dom_creer() {
@@ -76,8 +75,8 @@ class Module extends DOMObject {
 				resultat.appendChild(this.dom_option(k, values[k], k === selected));
 			}
 		}
-		DOMObject.addEventListeners(resultat, evts);
-		DOMObject.setAttributes(resultat, attributes);
+		App.addEventListeners(resultat, evts);
+		App.setAttributes(resultat, attributes);
 		return resultat;
 	}
 	dom_option(value, label, selected) {

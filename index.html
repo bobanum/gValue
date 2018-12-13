@@ -6,30 +6,20 @@
 	<link rel="icon" href="favicon.png">
 	<link rel="stylesheet" href="css/gvalue.css" />
 	<link rel="stylesheet" href="images/css/iconesgvalue.css" />
-	<script src="js/DOMObject.js"></script>
 	<script src="js/App.js"></script>
-	<script src="jsmenu/Menu.js"></script>
-	<script src="js/GValue.js"></script>
-	<script src="js/Critere.js"></script>
-	<script src="js/Evaluation.js"></script>
-	<script src="js/Eleve.js"></script>
-	<script src="js/Resultat.js"></script>
-	<script>
-		GValue.mode = GValue.MODE_EVALUATION;
-		window.addEventListener("load", function () {
-//			var evaluation = new Evaluation();
-//			evaluation.cours = "web1";
-//			evaluation.annee = "A2017";
-//			evaluation.id = "projetsynthese";
-//			evaluation.load(function () {
-//				document.querySelector("div.interface>div.body>div.main").appendChild(evaluation.dom);
-//			});
-			GValue.evaluation = Evaluation.load("web3", "H2018", "projet1", function () {
-				document.querySelector("div.interface>div.body>div.main").appendChild(GValue.evaluation.dom);
-			})
+	<script type="module">
+		import GValue from "./js/GValue.js";
+		import Evaluation from "./js/Evaluation.js";
+		import Eleve from "./js/Eleve.js";
+		App.load().then(() => {
+			App.mode = App.MODE_EVALUATION;
+			App.evaluation = Evaluation.load("web3", "H2018", "projet1", function() {
+				document.querySelector("div.interface>div.body>div.main").appendChild(App.evaluation.dom);
+			});
 
 			document.querySelector("div.interface>div.body>div.colonne").appendChild(Eleve.loadAll("web3", "H2018"));
-		})
+		});
+
 	</script>
 	<title>Édition &mdash; gValue</title>
 </head>
@@ -37,7 +27,7 @@
 <body>
 	<div class="interface">
 		<header>
-			<h1><img src="images/logoGValue.svg" height="48" alt="logo gValue"/> gValue</h1>
+			<h1><img src="images/logoGValue.svg" height="48" alt="logo gValue" /> gValue</h1>
 			<h2>Évaluation</h2>
 		</header>
 		<footer>&copy; 2017 - Martin Boudreau</footer>

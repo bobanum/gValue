@@ -1,39 +1,108 @@
 /*jshint esnext:true, browser:true*/
-/*exported App*/
 class App {
-	static addDependency(url, attributes) {
-		var element, id;
-		id = url.replace(/[^a-zA-Z0-9\_\-\.]/g, "_");
-		if (this.dependencies[id] !== undefined) {
-			return this.dependencies[id];
+	static addEventListeners(obj, evts) {
+		for (let k in evts) {
+			obj.addEventListener(k, evts[k]);
 		}
-		if (url.slice(-3) === ".js") {
-			element = document.createElement("script");
-			element.setAttribute("src", this.scriptPath + "/" + url);
-		} else if (url.slice(-4) === ".css") {
+		return obj;
+	}
+	static setAttribute(element, name, value) {
+		if (value === undefined) {
+			element.removeAttribute(name);
+		} else {
+			element.setAttribute(name, value);
+		}
+		return this;
+	}
+	static setAttributes(element, attributes) {
+		if (!attributes) {
+			return this;
+		}
+		for (let k in attributes) {
+			element.setAttribute(k, attributes[k]);
+		}
+		return this;
+	}
+	static addDependency(url) {
+		if (url instanceof Array) {
+			return Promise.all(url.map(u => this.addDependency(u)));
+		}
+		this.log('Loading "' + url + '"');
+		return new Promise(resolve => {
+			var id;
+			id = url.replace(/[^a-zA-Z0-9\_\-\.]/g, "_");
+			if (this.dependencies[id] !== undefined) {
+				return resolve(this.dependencies[id]);
+			}
+			var promise;
+			if (url.slice(-3) === ".js") {
+				promise = this.addScript(url);
+			} else if (url.slice(-4) === ".css") {
+				promise = this.addStyle(url);
+			}
+			resolve(promise.then(element => {
+				this.log('"'+url+'" loaded.');
+				element.setAttribute("id", id);
+				this.dependencies[id] = element;
+			}));
+			this.dependencies[id] = true;
+		});
+	}
+	static addStyle(url) {
+		return new Promise(resolve => {
+			var element;
 			element = document.createElement("link");
-			element.setAttribute("href", this.scriptPath + "/" + url);
+			element.setAttribute("href", this.scriptPath(url));
 			element.setAttribute("rel", "stylesheet");
-		}
-		element.setAttribute("id", id);
-		this.setAttributes(element, attributes);
-		this.dependencies[id] = element;
-		document.head.appendChild(element);
-		return this.dependencies[id];
+			element.addEventListener("load", e => {
+				resolve(e.target);
+			});
+			document.head.appendChild(element);
+		});
+	}
+	static addScript(url) {
+		return new Promise(resolve => {
+			var element;
+			element = document.createElement("script");
+			element.setAttribute("src", this.scriptPath(url));
+			element.setAttribute("type", "module");
+			element.addEventListener("load", e => {
+				resolve(e.target);
+			});
+			document.head.appendChild(element);
+		});
 	}
 	/**
 	 * Détermine le chemin actuel du script. Appelé une seule fois dans le init.
 	 * @returns App   - La classe courante
 	 */
-	static setScriptPath() {
-		this.scriptURL = document.head.lastChild.getAttribute('src');
-		this.scriptPath = document.head.lastChild.getAttribute('src').split('/').slice(0, -1);
-		if (this.scriptPath.length === 0) {
-			this.scriptPath = ".";
-		} else {
-			this.scriptPath = this.scriptPath.join("/");
+	static setPaths() {
+		var dossierPage = window.location.href.split("/").slice(0, -1);
+		this._pathPage = dossierPage.join("/");
+		var src = document.currentScript.getAttribute("src").split("/").slice(0, -1);
+		if (src.length > 0 && src[0] === "") {
+			src[0] = dossierPage.slice(0, 3).join("/");
 		}
-		return this;
+		if (src.length === 0 || !src[0].startsWith("http")) {
+			src = dossierPage.concat(src).filter(x => x !== ".");
+			let idx;
+			while (idx = src.indexOf(".."), idx > -1) {
+				src.splice(idx - 1, 2);
+			}
+		}
+		this._pathScript = src.join("/");
+	}
+	static pagePath(url) {
+		if (url === undefined) {
+			return this._pathPage;
+		}
+		return this._pathPage + "/" + url;
+	}
+	static scriptPath(url) {
+		if (url === undefined) {
+			return this._pathScript;
+		}
+		return this._pathScript + "/" + url;
 	}
 	/**
 	 * Retourne un objet contenant les informations et données d'une adresse
@@ -135,17 +204,34 @@ class App {
 			.replace(/_+/g, '_')
 			.replace(/^[^a-z0-9]+|_$/g, '');
 	}
+	static load() {
+		return Promise.all([
+			this.addDependency([
+				"../jsmenu/Menu.js",
+				"GValue.js",
+				"Critere.js",
+				"Evaluation.js",
+				"Eleve.js",
+				"Resultat.js",
+			]),
+			new Promise(resolve => {
+				window.addEventListener("load", function () {
+					resolve("loaded");
+				});
+			}),
+		]);
+	}
 	static init() {
+		this.loaded = false;
+		var debug = true;
+		this.log = (debug) ? console.log : function () {};
 		this.dependencies = {};
-		this.setScriptPath();
-		var data = this.parseUrl(this.scriptURL).data;
-		for (let k in data) {
-			this.addDependency(k + ".js");
-		}
+		this.setPaths();
+		this.data = this.parseUrl(this.scriptURL).data;
+
 		this.evt = {
 
 		};
-		window.addEventListener("load", function () {});
 	}
 }
 App.init();

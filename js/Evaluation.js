@@ -1,6 +1,10 @@
 /*jslint browser:true, esnext:true*/
-/*global Menu, GValue, Critere, Resultat*/
-class Evaluation extends Critere {
+/*global App */
+import Menu from "../jsmenu/Menu.js";
+import GValue from "./GValue.js";
+import Critere from "./Critere.js";
+import Resultat from "./Resultat.js";
+export default class Evaluation extends Critere {
 	constructor() {
 		super();
 		this.cours = "";
@@ -14,19 +18,19 @@ class Evaluation extends Critere {
 		return this._dom;
 	}
 	get coursId() {
-		return GValue.normaliserId(this.cours);
+		return App.normaliserId(this.cours);
 	}
 	get anneeId() {
-		return GValue.normaliserId(this.annee);
+		return App.normaliserId(this.annee);
 	}
 	get titreId() {
-		return GValue.normaliserId(this.titre);
+		return App.normaliserId(this.titre);
 	}
 	dom_creer() {
 		var resultat = document.createElement("fieldset");
 		resultat.classList.add("evaluation");
 		resultat.disabled = true;
-		if (GValue.mode === GValue.MODE_EVALUATION) {
+		if (App.mode === App.MODE_EVALUATION) {
 			resultat.appendChild(Resultat.dom_identification);
 		}
 		resultat.appendChild(this.dom_options());
@@ -75,9 +79,9 @@ class Evaluation extends Critere {
 		var resultat = new Evaluation();
 		var data = {
 			action: "loadEvaluation",
-			cours: GValue.normaliserId(cours),
-			annee: GValue.normaliserId(annee),
-			evaluation: GValue.normaliserId(evaluation)
+			cours: App.normaliserId(cours),
+			annee: App.normaliserId(annee),
+			evaluation: App.normaliserId(evaluation)
 		};
 		GValue.callApi(data, function (json) {
 			this.fill(json);
@@ -88,6 +92,7 @@ class Evaluation extends Critere {
 		return resultat;
 	}
 	static init() {
+		App.log("init", this.name);
 		this.labels = {
 			cours: "Cours",
 			annee: "Annee"

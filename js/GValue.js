@@ -1,7 +1,7 @@
 /*jslint esnext:true,browser:true*/
-/*global App, Evaluation*/
-/*exported GValue*/
-class GValue extends App {
+/*global App */
+import Evaluation from "./Evaluation.js";
+export default class GValue {
 	static callApi(data, callback, thisArg) {
 		thisArg = thisArg || this;
 		var xhr = new XMLHttpRequest();
@@ -186,8 +186,8 @@ class GValue extends App {
 		var html = document.createElement("div");
 		html.setAttribute("id", "editionEvaluation");
 		this.callApi({action:"loadEvaluation", cours:cours, annee:annee, evaluation:evaluation}, function (json) {
-			GValue.evaluation = Evaluation.fromObject(json);
-			html.appendChild(GValue.evaluation.dom);
+			App.evaluation = Evaluation.fromObject(json);
+			html.appendChild(App.evaluation.dom);
 		});
 		return html;
 	}

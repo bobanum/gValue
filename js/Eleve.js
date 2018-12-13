@@ -1,7 +1,8 @@
 /*jslint esnext:true, browser:true*/
-/*exported Eleve*/
-/*global GValue, Resultat*/
-class Eleve {
+/*global App */
+import GValue from "./GValue.js";
+import Resultat from "./Resultat.js";
+export default class Eleve {
 	constructor() {
 		this.matricule = "";
 		this.nom = "";
@@ -57,7 +58,7 @@ class Eleve {
 		return resultat;
 	}
 	loadResultat(evaluation, callback) {
-		evaluation = evaluation || GValue.evaluation;
+		evaluation = evaluation || App.evaluation;
 		return Resultat.load(evaluation, this, function (json) {
 			Resultat.dom_identification.nom.innerHTML = this.eleve.nom;
 			Resultat.dom_identification.prenom.innerHTML = this.eleve.prenom;
@@ -127,15 +128,16 @@ class Eleve {
 		}
 		return null;
 	}
-	static load(matricule, callback) {
+	static load(matricule) {
 		var eleve = this.getEleve(matricule);
 		return eleve;
 	}
 	static init() {
+		App.log("init", this.name);
 		this.evt = {
 			selectEleve: {
 				change: function () {
-					this.selectedOptions[0].obj.loadResultat(GValue.evaluation, function () {
+					this.selectedOptions[0].obj.loadResultat(App.evaluation, function () {
 						GValue.resultat = this;
 						this.appliquer();
 					});
