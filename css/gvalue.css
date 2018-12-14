@@ -160,8 +160,59 @@ header > h1 em {
 header > h1 img {
   height: 1.2em;
 }
+fieldset:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.5);
+}
+form.eleves {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+form.eleves > h1 {
+  margin: 0;
+}
+form.eleves > select {
+  font: inherit;
+  flex: 0 0 80vh;
+}
+form.eleves input[type=radio] {
+  display: none;
+}
+form.eleves input[type=radio] + label {
+  padding: .5em;
+  display: flex;
+  justify-content: space-between;
+  border-radius: .25em;
+}
+form.eleves input[type=radio]:hover + label {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+form.eleves input[type=radio]:checked + label {
+  background-color: rgba(0, 128, 128, 0.2);
+}
+form.eleves fieldset {
+  padding: 0;
+  border: none;
+}
+form.eleves li > h2 {
+  padding: .25em 0;
+  margin: 0;
+  margin-top: .25em;
+  font-size: 1.2em;
+}
+form.eleves li > h2::before {
+  font-family: monospace;
+  content: "▼";
+  content: "▾";
+}
+form.eleves li > h2.folded::before {
+  font-family: monospace;
+  content: "◀";
+  content: "▸";
+}
 @media all and (max-aspect-ratio: 1/1) {
-  div.main {
+  html {
     font-size: 2.5vw;
   }
   .colonne {
@@ -172,7 +223,7 @@ header > h1 img {
   }
 }
 @media all and (min-aspect-ratio: 1/1) {
-  div.main {
+  html {
     font-size: 2vw;
   }
 }
@@ -252,6 +303,9 @@ div#gestionEvaluations input:read-only {
 input {
   font: inherit;
 }
+.folded + fieldset > ul {
+  display: none;
+}
 div.critere {
   margin: .25em;
   padding: .25em;
@@ -313,18 +367,6 @@ span.label::after {
 .courant > .aides,
 .courant .critere:first-child > .aides {
   display: inherit;
-}
-section.eleves {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-section.eleves > h1 {
-  margin: 0;
-}
-section.eleves > select {
-  font: inherit;
-  flex: 0 0 80vh;
 }
 span[data-valeur]:after {
   content: "\A0[" attr(data-valeur) "]";
