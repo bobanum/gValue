@@ -135,6 +135,9 @@ export default class Resultat {
 		return this;
 	}
 	appliquer() {
+		Resultat.dom_identification.nom.innerHTML = this.eleve.nom;
+		Resultat.dom_identification.prenom.innerHTML = this.eleve.prenom;
+		Resultat.dom_identification.matricule.innerHTML = this.eleve.matricule;
 		this.evaluation.dom.disabled = false;
 
 		console.log("On doit appliquer le resultat à l'évaluation");

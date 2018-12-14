@@ -59,11 +59,11 @@ export default class Eleve {
 	}
 	loadResultat(evaluation) {
 		evaluation = evaluation || App.evaluation;
+		if (this.resultats[evaluation.id]) {
+			return Promise.resolve();
+		}
 		return Resultat.loadJson(evaluation, this).then(json => {
-			console.log(json);
-			Resultat.dom_identification.nom.innerHTML = this.nom;
-			Resultat.dom_identification.prenom.innerHTML = this.prenom;
-			Resultat.dom_identification.matricule.innerHTML = this.matricule;
+			this.resultats[evaluation.id] = json;
 			return json;
 		});
 	}
@@ -132,10 +132,11 @@ export default class Eleve {
 		App.log("init", this.name);
 		this.evt = {
 			selectEleve: {
-				change: function () {
-					this.selectedOptions[0].obj.loadResultat(App.evaluation, function () {
-						GValue.resultat = this;
-						this.appliquer();
+				change: function (e) {
+					var choix = e.target.selectedOptions[0].obj;
+					choix.loadResultat().then(data => {
+						GValue.resultat = data;
+						data.appliquer();
 					});
 				}
 			}
