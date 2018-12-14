@@ -57,15 +57,14 @@ export default class Eleve {
 		});
 		return resultat;
 	}
-	loadResultat(evaluation, callback) {
+	loadResultat(evaluation) {
 		evaluation = evaluation || App.evaluation;
-		return Resultat.load(evaluation, this, function (json) {
-			Resultat.dom_identification.nom.innerHTML = this.eleve.nom;
-			Resultat.dom_identification.prenom.innerHTML = this.eleve.prenom;
-			Resultat.dom_identification.matricule.innerHTML = this.eleve.matricule;
-			if (callback) {
-				callback.call(this, json);
-			}
+		return Resultat.loadJson(evaluation, this).then(json => {
+			console.log(json);
+			Resultat.dom_identification.nom.innerHTML = this.nom;
+			Resultat.dom_identification.prenom.innerHTML = this.prenom;
+			Resultat.dom_identification.matricule.innerHTML = this.matricule;
+			return json;
 		});
 	}
 	toJson() {
@@ -96,7 +95,7 @@ export default class Eleve {
 		resultat.prenom = a[2];
 		return resultat;
 	}
-	static loadAll(cours, annee, callback) {
+	static loadAll(cours, annee) {
 		this.eleves = null;
 		var conteneur = document.createElement("section");
 		conteneur.classList.add("eleves");
@@ -107,12 +106,9 @@ export default class Eleve {
 			cours: cours,
 			annee: annee
 		};
-		GValue.callApi(data, function (json) {
+		GValue.callApi(data).then(json => {
 			Eleve.eleves = json;
 			conteneur.appendChild(Eleve.html_selectEleve());
-			if (callback) {
-				callback.call(this, json);
-			}
 		});
 		return conteneur;
 	}
@@ -128,7 +124,7 @@ export default class Eleve {
 		}
 		return null;
 	}
-	static load(matricule) {
+	static loadJson(matricule) {
 		var eleve = this.getEleve(matricule);
 		return eleve;
 	}

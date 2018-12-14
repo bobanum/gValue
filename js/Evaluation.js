@@ -54,20 +54,17 @@ export default class Evaluation extends Critere {
 		resultat.appendChild(this.html_ligneDonnees("titre"));
 		return resultat;
 	}
-	load(callback) {
+	loadJson() {
 		var data = {
 			action: "loadEvaluation",
 			cours: this.coursId,
 			annee: this.anneeId,
 			evaluation: this.titreId
 		};
-		GValue.callApi(data, function (json) {
+		return GValue.callApi(data).then(json => {
 			this.fill(json);
-			if (callback) {
-				callback.call(this, json);
-			}
-		}, this);
-		return this;
+			return this;
+		});
 	}
 	toJson() {
 		var resultat = Critere.prototype.toJson.call(this);
@@ -75,21 +72,18 @@ export default class Evaluation extends Critere {
 		resultat.annee = this.annee;
 		return resultat;
 	}
-	static load(cours, annee, evaluation, callback) {
-		var resultat = new Evaluation();
+	static loadJson(cours, annee, evaluation) {
+		var resultat = new this();
 		var data = {
 			action: "loadEvaluation",
 			cours: App.normaliserId(cours),
 			annee: App.normaliserId(annee),
 			evaluation: App.normaliserId(evaluation)
 		};
-		GValue.callApi(data, function (json) {
-			this.fill(json);
-			if (callback) {
-				callback.call(this, json);
-			}
-		}, resultat);
-		return resultat;
+		return GValue.callApi(data).then(json => {
+			resultat.fill(json);
+			return resultat;
+		});
 	}
 	static init() {
 		App.log("init", this.name);

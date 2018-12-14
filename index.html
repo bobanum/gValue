@@ -13,7 +13,8 @@
 		import Eleve from "./js/Eleve.js";
 		App.load().then(() => {
 			App.mode = App.MODE_EVALUATION;
-			App.evaluation = Evaluation.load("web3", "H2018", "projet1", function() {
+			Evaluation.loadJson("web3", "H2018", "projet1").then(data => {
+				App.evaluation = data;
 				document.querySelector("div.interface>div.body>div.main").appendChild(App.evaluation.dom);
 			});
 

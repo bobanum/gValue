@@ -18,7 +18,8 @@ export default class Resultat {
 				this._evaluation = val;
 				//TODO Faire qqch??
 			} else if (typeof val === "string" && val !== this._evaluation.id) {
-				this._evaluation = Evaluation.load(val, function (/*json*/) {
+				this._evaluation = Evaluation.loadJson(val).then(data => {
+					console.log(data);
 					throw "Que fait-on avec le résultat???";
 				});
 			}
@@ -26,7 +27,8 @@ export default class Resultat {
 			if (val instanceof Evaluation) {
 				this._evaluation = val;
 			} else if (typeof val === "string") {
-				this._evaluation = Evaluation.load(val, function (/*json*/) {
+				this._evaluation = Evaluation.loadJson(val).then(data => {
+					console.log(data);
 					throw "Que fait-on avec le résultat???";
 				});
 			}
@@ -41,7 +43,8 @@ export default class Resultat {
 				this._eleve = val;
 				//TODO Faire qqch??
 			} else if (typeof val === "string" && val !== this._eleve.matricule) {
-				this._eleve = Eleve.load(val, function (/*json*/) {
+				this._eleve = Eleve.loadJson(val).then(data => {
+					console.log(data);
 					throw "Que fait-on avec le résultat???";
 				});
 			}
@@ -49,7 +52,8 @@ export default class Resultat {
 			if (val instanceof Eleve) {
 				this._eleve = val;
 			} else if (typeof val === "string") {
-				this._eleve = Eleve.load(val, function (/*json*/) {
+				this._eleve = Eleve.loadJson(val).then(data => {
+					console.log(data);
 					throw "Que fait-on avec le résultat???";
 				});
 			}
@@ -110,7 +114,7 @@ export default class Resultat {
 		}
 		return this._dom_identification;
 	}
-	load(callback) {
+	loadJson() {
 		var matricule = this.eleve.matricule;
 		var data = {
 			action: "loadResultat",
@@ -119,12 +123,10 @@ export default class Resultat {
 			evaluation: this.evaluation.titreId,
 			matricule: matricule
 		};
-		GValue.callApi(data, function (json) {
+		GValue.callApi(data).then(json => {
 			this.fill(json);
-			if (callback) {
-				callback.call(this, json);
-			}
-		}, this);
+			return this;
+		});
 	}
 	vider() {
 		for (let k in this._criteres) {
@@ -147,8 +149,8 @@ export default class Resultat {
 			matricule: this.eleve.matricule,
 			json: json
 		};
-		GValue.callApiPost(data, function () {
-			console.log("Faire qqch");
+		GValue.callApiPost(data).then(() => {
+			return console.log("Faire qqch");
 		});
 	}
 	toJson() {
@@ -161,7 +163,7 @@ export default class Resultat {
 		resultat.evaluation = this.evaluation.toJson();
 		return resultat;
 	}
-	static load(evaluation, eleve, callback) {
+	static loadJson(evaluation, eleve) {
 		if (GValue.resultat) {
 			GValue.resultat.vider();
 		}
@@ -176,13 +178,10 @@ export default class Resultat {
 			evaluation: evaluation.titreId,
 			matricule: matricule
 		};
-		GValue.callApi(data, function (json) {
-			this.fill(json);
-			if (callback) {
-				callback.call(this, json);
-			}
-		}, resultat);
-		return resultat;
+		return GValue.callApi(data).then(json => {
+			resultat.fill(json);
+			return resultat;
+		});
 	}
 	static init() {
 		this.prototype.fill = Critere.prototype.fill;

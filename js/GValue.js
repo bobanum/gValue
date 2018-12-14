@@ -2,32 +2,30 @@
 /*global App */
 import Evaluation from "./Evaluation.js";
 export default class GValue {
-	static callApi(data, callback, thisArg) {
-		thisArg = thisArg || this;
-		var xhr = new XMLHttpRequest();
-		xhr.open("get", "api.php" + this.urlEncode(data));
-		xhr.responseType = "json";
-		xhr.obj = this;
-		xhr.addEventListener("load", function () {
-			callback.call(thisArg, this.response);
+	static callApi(data) {
+		return new Promise(resolve => {
+			var xhr = new XMLHttpRequest();
+			xhr.open("get", this.urlApi + this.urlEncode(data));
+			xhr.responseType = "json";
+			xhr.addEventListener("load", function () {
+				resolve(this.response);
+			});
+			xhr.send(null);
 		});
-		xhr.send(null);
-		return xhr;
 	}
-	static callApiPost(data, callback, thisArg) {
-		thisArg = thisArg || this;
-		var xhr = new XMLHttpRequest();
-		xhr.open("post", "api.php");
-		xhr.responseType = "json";
-		xhr.obj = this;
-		xhr.addEventListener("load", function () {
-			callback.call(thisArg, this.response);
+	static callApiPost(data) {
+		return new Promise(resolve => {
+			var xhr = new XMLHttpRequest();
+			xhr.open("post", this.urlApi);
+			xhr.responseType = "json";
+			xhr.addEventListener("load", function () {
+				resolve(this.response);
+			});
+			if (typeof data === "object") {
+				data = this.formData(data);
+			}
+			xhr.send(data);
 		});
-		if (typeof data === "object") {
-			data = this.formData(data);
-		}
-		xhr.send(data);
-		return xhr;
 	}
 	static formData(data) {
 		var resultat = new FormData();
@@ -64,6 +62,7 @@ export default class GValue {
 	}
 	static loadEvaluations(callback) {
 		//TODO Utiliser callApi
+		throw "API?";
 		var xhr = new XMLHttpRequest();
 		xhr.open("get", "api.php?action=listeEvaluations");
 		xhr.responseType = "json";
@@ -76,6 +75,7 @@ export default class GValue {
 	}
 	static loadEvaluation(cours, annee, evaluation, callback) {
 		//TODO Utiliser callApi
+		throw "API?";
 		var xhr = new XMLHttpRequest();
 		xhr.open("get", "api.php?action=loadEvaluation&cours="+cours+"&annee="+annee+"&evaluation="+evaluation+"");
 		xhr.responseType = "json";
@@ -177,7 +177,7 @@ export default class GValue {
 	static gestionEvaluations() {
 		var html = document.createElement("div");
 		html.setAttribute("id", "gestionEvaluations");
-		this.callApi({action:"listeEvaluations"}, function (json) {
+		this.callApi({action:"listeEvaluations"}).then(json => {
 			html.appendChild(this.listeCours(json));
 		});
 		return html;
@@ -185,13 +185,14 @@ export default class GValue {
 	static editionEvaluation(cours, annee, evaluation) {
 		var html = document.createElement("div");
 		html.setAttribute("id", "editionEvaluation");
-		this.callApi({action:"loadEvaluation", cours:cours, annee:annee, evaluation:evaluation}, function (json) {
+		this.callApi({action:"loadEvaluation", cours:cours, annee:annee, evaluation:evaluation}).then(json => {
 			App.evaluation = Evaluation.fromObject(json);
 			html.appendChild(App.evaluation.dom);
 		});
 		return html;
 	}
 	static init() {
+		this.urlApi = "api.php";
 		this.MODE_EVALUATION = 0;
 		this.MODE_EDITION = 1;
 	}
