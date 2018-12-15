@@ -45,7 +45,7 @@ export default class Eleve {
 		let resultat = document.createElement("optgroup");
 		resultat.setAttribute("label", nomGroupe);
 		var eleves = Object.values(groupe);
-		eleves = eleves.map((e)=>Eleve.fromArray(e));
+		eleves = eleves.map((e) => Eleve.fromArray(e));
 		eleves.sort(function (eleve1, eleve2) {
 			if (eleve1.nom < eleve2.nom) {
 				return -1;
@@ -63,9 +63,9 @@ export default class Eleve {
 		resultat.addEventListener("click", function () {
 			var disabled = this.parentNode.querySelectorAll("optgroup[disabled]");
 			if (disabled.length > 0) {
-				disabled.forEach((d)=>d.removeAttribute("disabled"));
+				disabled.forEach((d) => d.removeAttribute("disabled"));
 			} else {
-				this.parentNode.querySelectorAll("optgroup").forEach((ch)=>ch.setAttribute("disabled", "disabled"));
+				this.parentNode.querySelectorAll("optgroup").forEach((ch) => ch.setAttribute("disabled", "disabled"));
 				this.removeAttribute("disabled");
 			}
 		});
@@ -75,7 +75,7 @@ export default class Eleve {
 		var resultat = document.createElement("fieldset");
 		var ul = resultat.appendChild(document.createElement("ul"));
 		var eleves = Object.values(groupe);
-		eleves = eleves.map((e)=>Eleve.fromArray(e));
+		eleves = eleves.map((e) => Eleve.fromArray(e));
 		eleves.sort(function (eleve1, eleve2) {
 			if (eleve1.nom < eleve2.nom) {
 				return -1;
@@ -93,9 +93,9 @@ export default class Eleve {
 		resultat.addEventListener("click", function () {
 			var disabled = this.parentNode.querySelectorAll("optgroup[disabled]");
 			if (disabled.length > 0) {
-				disabled.forEach((d)=>d.removeAttribute("disabled"));
+				disabled.forEach((d) => d.removeAttribute("disabled"));
 			} else {
-				this.parentNode.querySelectorAll("optgroup").forEach((ch)=>ch.setAttribute("disabled", "disabled"));
+				this.parentNode.querySelectorAll("optgroup").forEach((ch) => ch.setAttribute("disabled", "disabled"));
 				this.removeAttribute("disabled");
 			}
 		});
@@ -157,8 +157,14 @@ export default class Eleve {
 		this.eleves = null;
 		var conteneur = document.createElement("form");
 		conteneur.classList.add("eleves");
-		var titre = conteneur.appendChild(document.createElement("h1"));
+		var header = conteneur.appendChild(document.createElement("header"));
+		var titre = header.appendChild(document.createElement("h1"));
 		titre.innerHTML = "Les élèves";
+		var recherche = header.appendChild(document.createElement("input"));
+		recherche.setAttribute("name", "recherche");
+		recherche.addEventListener("input", e => {
+			this.filtrer(e.target);
+		});
 		var data = {
 			action: "listeEleves",
 			cours: cours,
@@ -169,6 +175,48 @@ export default class Eleve {
 			conteneur.appendChild(Eleve.html_radioEleves());
 		});
 		return conteneur;
+	}
+	static supprimerAccents(texte) {
+		return texte
+			.replace(/[áàâä]/g, 'a')
+			.replace(/[éèêë]/g, 'e')
+			.replace(/[íìîï]/g, 'i')
+			.replace(/[óòôö]/g, 'o')
+			.replace(/[úùûü]/g, 'u')
+			.replace(/ÿ/g, 'y')
+			.replace(/ç/g, 'c')
+			.replace(/ñ/g, 'n')
+			.replace(/œ/g, 'oe')
+			.replace(/æ/g, 'ae')
+			.replace(/[ÁÀÂÄ]/g, 'A')
+			.replace(/[ÉÈÊË]/g, 'E')
+			.replace(/[ÍÌÎÏ]/g, 'I')
+			.replace(/[ÓÒÔÖ]/g, 'O')
+			.replace(/[ÚÙÛÜ]/g, 'U')
+			.replace(/Ÿ/g, 'Y')
+			.replace(/Ç/g, 'C')
+			.replace(/Ñ/g, 'N')
+			.replace(/Œ/g, 'OE')
+			.replace(/Æ/g, 'AE');
+	}
+	static filtrer(recherche) {
+		var eleves = Array.from(recherche.form.querySelectorAll("input[type=radio]"));
+		recherche = recherche.value;
+		if (/^[0-9]+$/.test(recherche)) {
+			recherche = new RegExp(recherche, "i");
+		} else {
+			recherche = this.supprimerAccents(recherche);
+			recherche = recherche.split("").join(".*");
+			recherche = new RegExp(recherche, "i");
+		}
+		eleves.forEach(input => {
+			var texte = this.supprimerAccents(input.parentNode.textContent);
+			if (recherche.test(texte)) {
+				input.parentNode.classList.remove("cache");
+			} else {
+				input.parentNode.classList.add("cache");
+			}
+		});
 	}
 	static getEleve(matricule, groupe) {
 		groupe = groupe || this.eleves;
