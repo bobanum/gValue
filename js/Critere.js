@@ -404,7 +404,6 @@ export default class Critere {
 			},
 			input_commentaire: {
 				blur: function (e) {
-					debugger;
 					if (e.relatedTarget && e.relatedTarget.obj && e.currentTarget.obj !== e.relatedTarget.obj) {
 						this.obj.courant(false);
 					}

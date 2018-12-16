@@ -155,9 +155,13 @@ export default class Eleve {
 	}
 	static loadAll(cours, annee) {
 		this.eleves = null;
-		var conteneur = document.createElement("form");
-		conteneur.classList.add("eleves");
-		var header = conteneur.appendChild(document.createElement("header"));
+		var colonne = document.querySelector("div.interface>div.body>div.colonne");
+		var form = colonne.appendChild(document.createElement("form"));
+		form.classList.add("eleves");
+		var trigger = form.appendChild(document.createElement("div"));
+		trigger.classList.add("trigger");
+		trigger.innerHTML = "<span>&#x1f881;&nbsp;Élèves&nbsp;&#x1f881;</span>";
+		var header = form.appendChild(document.createElement("header"));
 		var titre = header.appendChild(document.createElement("h1"));
 		titre.innerHTML = "Les élèves";
 		var recherche = header.appendChild(document.createElement("input"));
@@ -172,9 +176,8 @@ export default class Eleve {
 		};
 		GValue.callApi(data).then(json => {
 			Eleve.eleves = json;
-			conteneur.appendChild(Eleve.html_radioEleves());
+			form.appendChild(Eleve.html_radioEleves());
 		});
-		return conteneur;
 	}
 	static supprimerAccents(texte) {
 		return texte
