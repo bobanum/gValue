@@ -59,6 +59,7 @@ export default class Critere {
 	dom_valeur() {
 		var resultat;
 		resultat = document.createElement("span");
+		resultat.classList.add("valeur");
 		if (this.modeEval) {
 			let input = resultat.appendChild(document.createElement("input"));
 			input.setAttribute("type", "text");
@@ -122,9 +123,14 @@ export default class Critere {
 	html_details() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");
-		resultat.appendChild(this.html_ligneDonnees("id"));
-		resultat.appendChild(this.html_ligneDonnees("titre"));
-		resultat.appendChild(this.html_ligneDonnees("valeur"));
+		resultat.appendChild(this.html_titre());
+		resultat.appendChild(this.dom_valeur());
+		return resultat;
+	}
+	html_titre() {
+		var resultat = document.createElement("label");
+		resultat.setAttribute("for", "resultat_" + this.id);
+		resultat.innerHTML = this.titre;
 		return resultat;
 	}
 	html_aides() {
@@ -244,9 +250,6 @@ export default class Critere {
 	html_ligneDonnees(champ, contenu) {
 		var resultat = document.createElement("div");
 		resultat.classList.add("champ-" + champ);
-		var label = resultat.appendChild(document.createElement("span"));
-		label.classList.add("label");
-		label.innerHTML = this.constructor.label(champ);
 		if (contenu === undefined) {
 			if (this["dom_" + champ] !== undefined) {
 				contenu = this["dom_" + champ]();
@@ -312,11 +315,13 @@ export default class Critere {
 			this.dom.classList.remove("courant");
 		}
 		var courant = document.querySelector('.courant');
+		var conteneur = document.querySelector(".main");
 		if (courant) {
-			var haut = (window.innerHeight - courant.clientHeight) * (1 / 3);
-			haut = Math.max(haut, 0);
-			this.animer([0, window.scrollY], [0, courant.offsetTop - 20 - haut], 200, function (x, y) {
-				window.scrollTo(x, y);
+			var haut = (conteneur.clientHeight - courant.clientHeight) * (1 / 3);
+			haut = Math.max(haut, 10);
+
+			this.animer([0, conteneur.scrollTop], [0, courant.offsetTop - haut], 200, function (x, y) {
+				conteneur.scrollTo(x, y);
 			});
 			//			var anim = {};
 			//			anim.temps = {};

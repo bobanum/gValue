@@ -33,7 +33,6 @@ export default class Eleve {
 		var label = resultat.appendChild(document.createElement("label"));
 		label.setAttribute("for", "eleve_" + this.matricule);
 		this.html_identification(label);
-//		label.innerHTML = '<span class="nom"><span>' + this.nom + '</span>, <span>' + this.prenom + '</span></span> <span class="matricule">' + this.matricule + '</span>';
 		radio.addEventListener("click", function (e) {
 			e.stopPropagation();
 			e.cancelBubble = true;
