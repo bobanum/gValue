@@ -98,16 +98,8 @@ export default class Resultat {
 		if (!this._dom_identification) {
 			let dom = document.createElement("div");
 			dom.classList.add("identification");
-			dom.nom = dom.appendChild(document.createElement("span"));
-			dom.nom.classList.add("nom");
-			dom.prenom = dom.appendChild(document.createElement("span"));
-			dom.prenom.classList.add("prenom");
-			dom.matricule = dom.appendChild(document.createElement("span"));
-			dom.matricule.classList.add("matricule");
 			if (this._eleve) {
-				dom.nom.innerHTML = this._eleve.nom;
-				dom.prenom.innerHTML = this._eleve.prenom;
-				dom.matricule.innerHTML = this._eleve.matricule;
+				this._eleve.html_identification(dom);
 			}
 			dom.obj = this;
 			this._dom_identification = dom;
@@ -135,9 +127,10 @@ export default class Resultat {
 		return this;
 	}
 	appliquer() {
-		Resultat.dom_identification.nom.innerHTML = this.eleve.nom;
-		Resultat.dom_identification.prenom.innerHTML = this.eleve.prenom;
-		Resultat.dom_identification.matricule.innerHTML = this.eleve.matricule;
+		while (Resultat.dom_identification.firstChild) {
+			Resultat.dom_identification.removeChild(Resultat.dom_identification.firstChild);
+	   }
+		this.eleve.html_identification(Resultat.dom_identification);
 		this.evaluation.dom.disabled = false;
 
 		console.log("On doit appliquer le resultat à l'évaluation");

@@ -32,7 +32,8 @@ export default class Eleve {
 		radio.obj = this;
 		var label = resultat.appendChild(document.createElement("label"));
 		label.setAttribute("for", "eleve_" + this.matricule);
-		label.innerHTML = '<span className="nom"><span>' + this.nom + '</span>, <span>' + this.prenom + '</span></span> <span class="matricule">' + this.matricule + '</span>';
+		this.html_identification(label);
+//		label.innerHTML = '<span class="nom"><span>' + this.nom + '</span>, <span>' + this.prenom + '</span></span> <span class="matricule">' + this.matricule + '</span>';
 		radio.addEventListener("click", function (e) {
 			e.stopPropagation();
 			e.cancelBubble = true;
@@ -40,6 +41,20 @@ export default class Eleve {
 		});
 		resultat.obj = this;
 		return resultat;
+	}
+	html_identification(conteneur) {
+		var nom, span, matricule;
+		conteneur = conteneur || document.createElement("div");
+		nom = conteneur.appendChild(document.createElement("span"));
+		nom.classList.add("nomAdmin");
+		span = nom.appendChild(document.createElement("span"));
+		span.innerHTML = this.nom;
+		span = nom.appendChild(document.createElement("span"));
+		span.innerHTML = this.prenom;
+		matricule = conteneur.appendChild(document.createElement("span"));
+		matricule.classList.add("matricule");
+		matricule.innerHTML = this.matricule;
+		return conteneur;
 	}
 	static html_optgroup(nomGroupe, groupe) {
 		let resultat = document.createElement("optgroup");
