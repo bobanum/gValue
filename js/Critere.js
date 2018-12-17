@@ -85,6 +85,14 @@ export default class Critere {
 		resultat.classList.add("cliquables");
 		vals.forEach(function (v) {
 			let span = resultat.appendChild(document.createElement("span"));
+			v = Math.round(100 * v) / 100;
+			v = v.toString()
+				.replace(/\.25$/, "&frac14;")
+				.replace(/\.33$/, "&frac13;")
+				.replace(/\.5$/, "&frac12;")
+				.replace(/\.67$/, "&frac23;")
+				.replace(/\.75$/, "&frac34;")
+			;
 			span.innerHTML = v;
 			span.obj = this;
 			App.addEventListeners(span, this.evt.choix);
@@ -174,14 +182,20 @@ export default class Critere {
 		}
 		return resultat;
 	}
-	echelle(max, nbVals) {
+	echelle(max, nbVals, divisions) {
 		nbVals = nbVals || max;
-		var taux = (max / nbVals - 1) * (5 / 3) + 1;
+		divisions = divisions || Math.ceil(nbVals / max);
+		var taux = (max * divisions / nbVals - 1) * (5 / 3) + 1;
 		taux = 1 / Math.min(1.5, taux);
 		var resultat = [];
 		for (let i = 0; i <= nbVals; i += 1) {
-			resultat.push(Math.round(max * Math.pow(i / nbVals, taux)));
+			resultat.push(this.echelon(max, i / nbVals, taux, divisions));
 		}
+		return resultat;
+	}
+	echelon(max, portion, taux = 1, divisions = 1) {
+		var resultat = max * Math.pow(portion, taux);
+		resultat = Math.round(divisions * resultat) / divisions;
 		return resultat;
 	}
 	ajouterCritere(critere, id) {
@@ -421,3 +435,4 @@ export default class Critere {
 	}
 }
 Critere.init();
+window.Critere = Critere;
