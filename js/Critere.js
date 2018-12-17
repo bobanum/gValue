@@ -305,72 +305,57 @@ export default class Critere {
 		}
 	}
 	courant(etat) {
+		var etatActuel = this.dom.classList.contains("courant");
 		var courants = document.querySelectorAll('.courant');
-		courants.forEach((c) => c.classList.remove("courant"));
+		courants.forEach(c => c.classList.remove("courant"));
+
 		if (etat === undefined) {
-			this.dom.classList.toggle("courant");
-		} else if (etat) {
-			this.dom.classList.add("courant");
-		} else {
-			this.dom.classList.remove("courant");
+			etat = !etatActuel;
 		}
-		var courant = document.querySelector('.courant');
-		var conteneur = document.querySelector(".main");
-		if (courant) {
+		if (etat) {
+			var courant = this.dom;
+			courant.classList.add("courant");
+			var conteneur = document.querySelector(".main");
 			var haut = (conteneur.clientHeight - courant.clientHeight) * (1 / 3);
 			haut = Math.max(haut, 10);
+			haut = conteneur.clientHeight * 0.1;
 
 			this.animer([0, conteneur.scrollTop], [0, courant.offsetTop - haut], 200, function (x, y) {
 				conteneur.scrollTo(x, y);
-			});
-			//			var anim = {};
-			//			anim.temps = {};
-			//			anim.temps.debut = new Date().getTime();
-			//			anim.temps.delta = 100;
-			//			anim.temps.fin = anim.temps.debut + anim.temps.delta;
-			//			anim.etat = {};
-			//			anim.etat.debut = window.scrollY;
-			//			anim.etat.fin = courant.offsetTop - 20 - haut;
-			//			anim.etat.delta = anim.etat.fin - anim.etat.debut;
-			//			anim.interval;
-			//			var anim.interval = window.setInterval(function () {
-			//				var t = new Date().getTime();
-			//				var dt = t - anim.temps.debut;
-			//				var de = (dt / anim.temps.delta) * anim.etat.delta;
-			//				var e = anim.etat.debut + de;
-			//				window.scrollTo(0, e);
-			//				if (t > anim.temps.fin) {
-			//					window.clearInterval(iii);
-			//				}
-			//			}, 10);
+			})/*.then(data => {
+				console.log("Fin de l'animation.", data);
+			})*/;
 		}
 		return this.estCourant();
 	}
 	animer(debut, fin, duree, callback) {
-		var anim = {};
-		anim.temps = {};
-		anim.temps.debut = new Date().getTime();
-		anim.temps.delta = duree;
-		anim.temps.fin = anim.temps.debut + anim.temps.delta;
-		anim.etat = {};
-		anim.etat.debut = debut;
-		anim.etat.fin = fin;
-		anim.etat.delta = anim.etat.fin - anim.etat.debut;
-		anim.interval = window.setInterval(function () {
-			var t = new Date().getTime();
-			var ratio = (t - anim.temps.debut) / anim.temps.delta;
-			var e;
-			if (anim.etat.fin instanceof Array) {
-				e = anim.etat.fin.map((e, i) => anim.etat.debut[i] + ratio * (anim.etat.fin[i] - anim.etat.debut[i]));
-				callback.apply(this, e);
-			} else {
-				e = anim.etat.debut + ratio * (anim.etat.fin - anim.etat.debut);
-				callback.call(this, e);
-			}
-			if (t > anim.temps.fin) {
-				window.clearInterval(anim.interval);
-			}
-		}, 10);
+		return new Promise(resolve => {
+			var anim = {};
+			anim.temps = {};
+			anim.temps.debut = new Date().getTime();
+			anim.temps.delta = duree;
+			anim.temps.fin = anim.temps.debut + anim.temps.delta;
+			anim.etat = {};
+			anim.etat.debut = debut;
+			anim.etat.fin = fin;
+			anim.etat.delta = anim.etat.fin - anim.etat.debut;
+			anim.interval = window.setInterval(() => {
+				var t = new Date().getTime();
+				var ratio = (t - anim.temps.debut) / anim.temps.delta;
+				var e;
+				if (anim.etat.fin instanceof Array) {
+					e = anim.etat.fin.map((e, i) => anim.etat.debut[i] + ratio * (anim.etat.fin[i] - anim.etat.debut[i]));
+					callback.apply(this, e);
+				} else {
+					e = anim.etat.debut + ratio * (anim.etat.fin - anim.etat.debut);
+					callback.call(this, e);
+				}
+				if (t > anim.temps.fin) {
+					window.clearInterval(anim.interval);
+					resolve(this);
+				}
+			}, 20);
+		});
 
 	}
 	estCourant() {

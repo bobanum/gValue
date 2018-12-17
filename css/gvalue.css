@@ -149,6 +149,7 @@ optgroup:disabled > option {
   margin: 0;
   width: 100%;
   border: none;
+  outline: none;
 }
 .main {
   padding: 1em;
@@ -269,16 +270,6 @@ form.eleves li > h2.folded::before {
   font-family: monospace;
   content: "◀";
   content: "▸";
-}
-@media all and (max-aspect-ratio: 1/1) {
-  div.main {
-    font-size: 3vw;
-  }
-}
-@media all and (min-aspect-ratio: 1/1) {
-  div.main {
-    font-size: 2.5vw;
-  }
 }
 div.body {
   position: relative;
@@ -520,4 +511,16 @@ span.label::after {
 }
 span[data-valeur]:after {
   content: "\A0[" attr(data-valeur) "]";
+}
+@media all and (max-aspect-ratio: 1/1) {
+  div.main {
+    font-size: 3vw;
+  }
+}
+@media all and (min-aspect-ratio: 1/1) {
+  div.main > fieldset {
+    width: 92vh;
+    margin: 0 auto;
+    font-size: 3vh;
+  }
 }
