@@ -52,7 +52,7 @@ class GValue {
 	static function creerPath($path) {
 		if (!file_exists($path)) {
 			self::creerPath(dirname($path));
-			mkdir($path, basename($path));
+			mkdir($path);
 		}
 		return $path;
 	}
