@@ -9,6 +9,7 @@ export default class Evaluation extends Critere {
 		super();
 		this.cours = "";
 		this.annee = "";
+		this._criteres_all = {};
 	}
 	get dom() {
 		if (!this._dom) {
@@ -63,6 +64,8 @@ export default class Evaluation extends Critere {
 		};
 		return GValue.callApi(data).then(json => {
 			this.fill(json);
+			this._criteres_all = this.inventaireCriteres();
+			this._criteres_all.forEach(c => c._evaluation = this);
 			return this;
 		});
 	}
@@ -82,6 +85,12 @@ export default class Evaluation extends Critere {
 		};
 		return GValue.callApi(data).then(json => {
 			resultat.fill(json);
+			console.log(resultat.inventaireCriteres());
+			var criteres = resultat.inventaireCriteres();
+			criteres.forEach(c => {
+				c._evaluation = resultat;
+				resultat._criteres_all[c.id] = c;
+			});
 			return resultat;
 		});
 	}

@@ -5,6 +5,7 @@ export default class Critere {
 	constructor() {
 		this.id = App.creerId();
 		this.titre = "";
+		this._input_valeur = null;
 		this._valeur = "";
 		this._commentaires = {};
 		this._criteres = {};
@@ -47,6 +48,14 @@ export default class Critere {
 	get length() {
 		return Object.keys(this.criteres).length;
 	}
+	inventaireCriteres() {
+		var resultat = [];
+		for (let k in this._criteres) {
+			resultat.push(this._criteres[k]);
+			resultat.push(...this._criteres[k].inventaireCriteres());
+		}
+		return resultat;
+	}
 	dom_creer() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("critere");
@@ -56,25 +65,30 @@ export default class Critere {
 		resultat.appendChild(this.html_criteres());
 		return resultat;
 	}
-	dom_valeur() {
+	get input_valeur() {
 		var resultat;
+		if (this._input_valeur) {
+			return this._input_valeur;
+		}
+		resultat = document.createElement("input");
+		resultat.setAttribute("type", "text");
+		resultat.setAttribute("id", "resultat_" + this.id);
+		resultat.setAttribute("tabindex", 1);
+		App.addEventListeners(resultat, this.evt.input_resultat);
+		resultat.obj = this;
+		resultat.setAttribute("value", this.valeur);
+		this._input_valeur = resultat;
+		this._input_valeur.obj = this;
+		return resultat;
+	}
+	dom_valeur() {
+		var resultat, input;
 		resultat = document.createElement("span");
 		resultat.classList.add("valeur");
+		input = resultat.appendChild(this.input_valeur);
 		if (this.modeEval) {
-			let input = resultat.appendChild(document.createElement("input"));
-			input.setAttribute("type", "text");
-			input.setAttribute("id", "resultat_" + this.id);
-			input.setAttribute("tabindex", 1);
-			App.addEventListeners(input, this.evt.input_resultat);
-			//			input.addEventListener("focus", this.evt.input_resultat.focus);
-			//			input.addEventListener("blur", this.evt.input_resultat.blur);
-			input.obj = this;
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = "/" + this.valeur;
-		} else {
-			let input = resultat.appendChild(document.createElement("input"));
-			input.setAttribute("type", "text");
-			input.setAttribute("value", this.valeur);
 		}
 		return resultat;
 	}
@@ -132,7 +146,7 @@ export default class Critere {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");
 		resultat.appendChild(this.html_titre());
-		resultat.appendChild(this.dom_valeur());
+		resultat.appendChild(this.dom_valeur);
 		return resultat;
 	}
 	html_titre() {

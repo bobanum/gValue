@@ -64,35 +64,35 @@ export default class Resultat {
 	}
 	set criteres(val) {
 		for (let k in val) {
-			this.critere(k, val[k]);
+			this.setCritere(k, val[k]);
 		}
 	}
-	critere(id, val) {
-		if (arguments.length === 1) {
-			return this._criteres[id];
-		} else {
-			if (val instanceof Resultat_Critere) {
-				this._citeres[id] = val;
-			} else {
-				this._criteres[id] = new Resultat_Critere(id, val);
-			}
-			return this.criteres[id];
+	getCritere(id) {
+		return this._criteres[id];
+	}
+	setCritere(critere, val) {
+		if (typeof critere === "string") {
+			critere = this._evaluation._criteres_all[critere];
 		}
+		var resultat = new Resultat_Critere(critere, val);
+		this._criteres[critere.id] = resultat;
+
+		return resultat;
 	}
 	valeur(id, val) {
-		if (arguments.length === 2) {
-			if (this.criteres[id] === undefined) {
-				this.criteres[id] = new Resultat_Critere(id);
-			}
-			this.criteres[id].valeur = val;
-			var input = document.getElementById('resultat_' + id);
-			if (val !== input.value) {
-				input.value = val;
-			}
-			return this.criteres[id];
-		} else {
-			return this.criteres[id].valeur;
+		if (this.criteres[id] === undefined) {
+			throw "Le critere (resultat) '"+id+"' n'existe pas";
 		}
+		var critere = this.criteres[id];
+		if (arguments.length === 2) {
+			critere.valeur = val;
+			return critere;
+		} else {
+			return critere.valeur;
+		}
+	}
+	maj() {
+
 	}
 	static get dom_identification() {
 		if (!this._dom_identification) {
@@ -116,6 +116,7 @@ export default class Resultat {
 			matricule: matricule
 		};
 		GValue.callApi(data).then(json => {
+			debugger;
 			this.fill(json);
 			return this;
 		});
@@ -129,7 +130,7 @@ export default class Resultat {
 	appliquer() {
 		while (Resultat.dom_identification.firstChild) {
 			Resultat.dom_identification.removeChild(Resultat.dom_identification.firstChild);
-	   }
+		}
 		this.eleve.html_identification(Resultat.dom_identification);
 		this.evaluation.dom.disabled = false;
 
@@ -165,8 +166,8 @@ export default class Resultat {
 		}
 		var matricule = eleve.matricule || eleve;
 		var resultat = new this();
-		resultat.eleve = eleve;//TODO Voir l'utilité
-		resultat.evaluation = evaluation;//TODO Voir l'utilité
+		resultat.eleve = eleve; //TODO Voir l'utilité
+		resultat.evaluation = evaluation; //TODO Voir l'utilité
 		var data = {
 			action: "loadResultat",
 			cours: evaluation.coursId,
@@ -199,8 +200,8 @@ Resultat.init();
 
 
 class Resultat_Critere {
-	constructor(id, obj) {
-		this.id = id;
+	constructor(critere, obj) {
+		this._critere = critere;
 		this._valeur = "";
 		this._commentaires = {};
 		if (obj) {
@@ -212,15 +213,25 @@ class Resultat_Critere {
 			this[k] = obj[k];
 		}
 	}
+	get id() {
+		return this._critere.id;
+	}
+	set id(val) {
+		if (this._critere) {
+			return this;
+		}
+		this._critere = this._evaluation._criteres_all[val];
+		return this;
+	}
 	get valeur() {
 		return this._valeur;
 	}
 	set valeur(val) {
-		this._valeur = val;
-		var input = document.getElementById('resultat_' + this.id);
-		if (val !== input.value) {
-			input.value = val;
+		if (this._valeur === val) {
+			return this;
 		}
+		this._valeur = val;
+		this.maj();
 	}
 	get commentaires() {
 		return this._commentaires;
@@ -229,6 +240,9 @@ class Resultat_Critere {
 		for (let k in val) {
 			this._commentaires[k] = val[k];
 		}
+	}
+	maj() {
+		debugger;
 	}
 	toJson() {
 		var resultat = {};
