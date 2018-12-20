@@ -146,7 +146,7 @@ export default class Critere {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");
 		resultat.appendChild(this.html_titre());
-		resultat.appendChild(this.dom_valeur);
+		resultat.appendChild(this.dom_valeur());
 		return resultat;
 	}
 	html_titre() {
