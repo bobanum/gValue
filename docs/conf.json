@@ -1,0 +1,25 @@
+{
+    "plugins": [],
+    "recurseDepth": 10,
+    "opts": {
+        "template": "templates/default",
+        "encoding": "utf8",
+        "destination": "./docs/api",
+        "recurse": true,
+        "verbose": true
+    },
+    "source": {
+        "exclude": ["docs"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    }
+}
+
