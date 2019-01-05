@@ -193,6 +193,7 @@ export default class GValue {
 	}
 	static init() {
 		this.urlApi = "api.php";
+		App.log("init", this.name);
 		this.MODE_EVALUATION = 0;
 		this.MODE_EDITION = 1;
 	}

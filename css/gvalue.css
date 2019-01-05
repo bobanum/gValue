@@ -255,6 +255,28 @@ form.eleves fieldset {
   padding: 0;
   border: none;
 }
+form.eleves fieldset.groupe {
+  border: 1px solid rgba(0, 128, 128, 0.5);
+  margin-top: .5em;
+  padding: .25em;
+}
+form.eleves fieldset.groupe > legend {
+  font-weight: bold;
+  margin-bottom: .25em;
+}
+form.eleves fieldset.groupe > legend::before {
+  font-family: monospace;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  content: "▼";
+  content: "▾";
+}
+form.eleves fieldset.groupe.folded > legend::before {
+  content: "◀";
+  content: "▸";
+}
 form.eleves li > h2 {
   padding: .25em 0;
   margin: 0;
@@ -431,7 +453,7 @@ div#gestionEvaluations input:read-only {
 input {
   font: inherit;
 }
-.folded + fieldset > ul {
+fieldset.folded > :not(legend) {
   display: none;
 }
 div.critere {

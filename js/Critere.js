@@ -74,7 +74,10 @@ export default class Critere {
 		resultat.setAttribute("type", "text");
 		resultat.setAttribute("id", "resultat_" + this.id);
 		resultat.setAttribute("tabindex", 1);
-		App.addEventListeners(resultat, this.evt.input_resultat);
+		var evts = this.evt.input_resultat;
+		for (let k in evts) {
+			resultat.addEventListener(k, evts[k]);
+		}
 		resultat.obj = this;
 		resultat.setAttribute("value", this.valeur);
 		this._input_valeur = resultat;
@@ -105,11 +108,13 @@ export default class Critere {
 				.replace(/\.33$/, "&frac13;")
 				.replace(/\.5$/, "&frac12;")
 				.replace(/\.67$/, "&frac23;")
-				.replace(/\.75$/, "&frac34;")
-			;
+				.replace(/\.75$/, "&frac34;");
 			span.innerHTML = v;
 			span.obj = this;
-			App.addEventListeners(span, this.evt.choix);
+			let evts = this.evt.choix;
+			for (let k in evts) {
+				span.addEventListener(k, evts[k]);
+			}
 		}, this);
 		return resultat;
 	}
@@ -126,7 +131,10 @@ export default class Critere {
 			span.obj = this;
 			span.setAttribute("data-valeur", echelle[i]);
 			span.setAttribute("title", echelle[i]);
-			App.addEventListeners(span, this.evt.choix);
+			var evts = this.evt.choix;
+			for (let k in evts) {
+				span.addEventListener(k, evts[k]);
+			}
 		}, this);
 		return resultat;
 	}
@@ -138,7 +146,9 @@ export default class Critere {
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = v;
 			span.obj = this;
-			App.addEventListeners(span, evts);
+			for (let k in evts) {
+				span.addEventListener(k, evts[k]);
+			}
 		}, this);
 		return resultat;
 	}
@@ -350,9 +360,11 @@ export default class Critere {
 
 			this.animer([0, conteneur.scrollTop], [0, courant.offsetTop - haut], 200, function (x, y) {
 				conteneur.scrollTo(x, y);
-			})/*.then(data => {
-				console.log("Fin de l'animation.", data);
-			})*/;
+			})
+			/*.then(data => {
+							console.log("Fin de l'animation.", data);
+						})*/
+			;
 		}
 		return this.estCourant();
 	}
@@ -449,4 +461,4 @@ export default class Critere {
 	}
 }
 Critere.init();
-window.Critere = Critere;
+//window.Critere = Critere;

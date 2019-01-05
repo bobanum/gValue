@@ -116,7 +116,6 @@ export default class Resultat {
 			matricule: matricule
 		};
 		GValue.callApi(data).then(json => {
-			debugger;
 			this.fill(json);
 			return this;
 		});
@@ -165,9 +164,6 @@ export default class Resultat {
 			GValue.resultat.vider();
 		}
 		var matricule = eleve.matricule || eleve;
-		var resultat = new this();
-		resultat.eleve = eleve; //TODO Voir l'utilité
-		resultat.evaluation = evaluation; //TODO Voir l'utilité
 		var data = {
 			action: "loadResultat",
 			cours: evaluation.coursId,
@@ -176,7 +172,12 @@ export default class Resultat {
 			matricule: matricule
 		};
 		return GValue.callApi(data).then(json => {
+			var resultat = new this();
+			resultat.eleve = eleve;
+			resultat.evaluation = evaluation;
 			resultat.fill(json);
+			eleve.resultats[evaluation.id] = resultat;
+			evaluation.resultats[eleve.id] = resultat;
 			return resultat;
 		});
 	}
@@ -242,7 +243,7 @@ class Resultat_Critere {
 		}
 	}
 	maj() {
-		debugger;
+//		debugger;
 	}
 	toJson() {
 		var resultat = {};
@@ -255,7 +256,7 @@ class Resultat_Critere {
 		return resultat;
 	}
 	static init() {
-
+		App.log("init", this.name);
 	}
 }
 Resultat_Critere.init();

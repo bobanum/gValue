@@ -1,5 +1,5 @@
 /*jslint esnext:true, browser:true*/
-/*globals App*/
+/*global App */
 export default class Module {
 	constructor() {
 		this._dom = null;
@@ -16,15 +16,19 @@ export default class Module {
 		resultat.classList.add("interface");
 		return resultat;
 	}
-	dom_bouton(id, value, evts, attributes) {
+	dom_bouton(id, value, evts = {}, attributes = {}) {
 		var resultat;
 
 		resultat = document.createElement("input");
 		resultat.setAttribute("id", id);
 		resultat.setAttribute("type", "button");
 		resultat.setAttribute("value", value);
-		App.addEventListeners(resultat, evts);
-		App.setAttributes(resultat, attributes);
+		for (let k in evts) {
+			resultat.addEventListener(k, evts[k]);
+		}
+		for (let k in attributes) {
+			resultat.setAttribute(k, attributes[k]);
+		}
 		return resultat;
 	}
 	dom_creer() {
@@ -62,7 +66,7 @@ export default class Module {
 		this.body.innerHTML = "dom_body";
 		return this.body;
 	}
-	dom_select(id, values, evts, selected, attributes) {
+	dom_select(id, values, evts, selected, attributes = {}) {
 		var resultat = document.createElement("select");
 		resultat.setAttribute("id", id);
 		resultat.setAttribute("name", id);
@@ -75,8 +79,12 @@ export default class Module {
 				resultat.appendChild(this.dom_option(k, values[k], k === selected));
 			}
 		}
-		App.addEventListeners(resultat, evts);
-		App.setAttributes(resultat, attributes);
+		for (let k in evts) {
+			resultat.addEventListener(k, evts[k]);
+		}
+		for (let k in attributes) {
+			resultat.setAttribute(k, attributes[k]);
+		}
 		return resultat;
 	}
 	dom_option(value, label, selected) {
@@ -91,6 +99,7 @@ export default class Module {
 		return resultat;
 	}
 	static init() {
+		App.log("init", this.name);
 		this.evt = {
 
 		};

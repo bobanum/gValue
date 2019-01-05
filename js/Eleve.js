@@ -2,7 +2,16 @@
 /*global App */
 import GValue from "./GValue.js";
 import Resultat from "./Resultat.js";
+import Groupe from "./Groupe.js";
+
+/**
+ * Représente un élève
+ * @todo Évaluer la pertinance de gréer un objet Groupe
+ */
 export default class Eleve {
+	/**
+	 * Constructeur
+	 */
 	constructor() {
 		this.matricule = "";
 		this.nom = "";
@@ -10,8 +19,12 @@ export default class Eleve {
 		this.groupe = "";
 		this.resultats = {};
 	}
+	/**
+	 * Retourne la balise option représentant un élève
+	 * @returns {HTMLElement} L'élément option créé
+	 */
 	html_option() {
-		let resultat = document.createElement("option");
+		var resultat = document.createElement("option");
 		resultat.setAttribute("value", this.matricule);
 		resultat.innerHTML = this.nom + ", " + this.prenom + " [" + this.matricule + "]";
 		resultat.addEventListener("click", function (e) {
@@ -22,28 +35,48 @@ export default class Eleve {
 		resultat.obj = this;
 		return resultat;
 	}
-	html_radio() {
-		var resultat = document.createElement("li");
-		var radio = resultat.appendChild(document.createElement("input"));
+	/**
+	 * Retourne un élément contenant un radio suivi d'un label.
+	 * @param   {string|HTMLElement|false} conteneur Le nom de l'élément devant contenir la paire. Si on donne false, le radio se trouvera dans le label. defaut:"span"
+	 * @returns {HTMLElement}              L'élément HTML demandé
+	 */
+	html_radio(conteneur = "span") {
+		var radio = document.createElement("input");
 		radio.setAttribute("type", "radio");
 		radio.setAttribute("name", "eleve");
 		radio.setAttribute("id", "eleve_" + this.matricule);
 		radio.setAttribute("value", this.matricule);
 		radio.obj = this;
-		var label = resultat.appendChild(document.createElement("label"));
-		label.setAttribute("for", "eleve_" + this.matricule);
-		this.html_identification(label);
 		radio.addEventListener("click", function (e) {
 			e.stopPropagation();
 			e.cancelBubble = true;
 			return false;
 		});
-		resultat.obj = this;
-		return resultat;
+		var label = this.html_identification("label");
+		label.setAttribute("for", "eleve_" + this.matricule);
+		if (!conteneur) {
+			label.insertBefore(radio, label.firstChild);
+			label.obj = this;
+			return label;
+		}
+		if (typeof conteneur === "string") {
+			conteneur = document.createElement(conteneur);
+		}
+		conteneur.obj = this;
+		conteneur.appendChild(radio);
+		conteneur.appendChild(label);
+		return conteneur;
 	}
-	html_identification(conteneur) {
+	/**
+	 * Retourne un élément contenant les nom, prénom et matricule de l'élève
+	 * @param   {string|HTMLElement} conteneur L'élément dans lequel accumuler les infos
+	 * @returns {HTMLElement}        L'élément identifiant
+	 */
+	html_identification(conteneur = "span") {
 		var nom, span, matricule;
-		conteneur = conteneur || document.createElement("div");
+		if (typeof conteneur === "string") {
+			conteneur = document.createElement(conteneur);
+		}
 		nom = conteneur.appendChild(document.createElement("span"));
 		nom.classList.add("nomAdmin");
 		span = nom.appendChild(document.createElement("span"));
@@ -55,144 +88,165 @@ export default class Eleve {
 		matricule.innerHTML = this.matricule;
 		return conteneur;
 	}
-	static html_optgroup(nomGroupe, groupe) {
-		let resultat = document.createElement("optgroup");
-		resultat.setAttribute("label", nomGroupe);
-		var eleves = Object.values(groupe);
-		eleves = eleves.map((e) => Eleve.fromArray(e));
-		eleves.sort(function (eleve1, eleve2) {
-			if (eleve1.nom < eleve2.nom) {
-				return -1;
-			} else if (eleve1.nom > eleve2.nom) {
-				return 1;
-			} else if (eleve1.prenom < eleve2.prenom) {
-				return -1;
-			} else if (eleve1.prenom > eleve2.prenom) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
-		eleves.forEach(e => (e.groupe = nomGroupe, resultat.appendChild(e.html_option())));
-		resultat.addEventListener("click", function () {
-			var disabled = this.parentNode.querySelectorAll("optgroup[disabled]");
-			if (disabled.length > 0) {
-				disabled.forEach((d) => d.removeAttribute("disabled"));
-			} else {
-				this.parentNode.querySelectorAll("optgroup").forEach((ch) => ch.setAttribute("disabled", "disabled"));
-				this.removeAttribute("disabled");
-			}
-		});
-		return resultat;
-	}
-	static html_radioGroup(nomGroupe, groupe) {
-		var resultat = document.createElement("fieldset");
-		var ul = resultat.appendChild(document.createElement("ul"));
-		var eleves = Object.values(groupe);
-		eleves = eleves.map((e) => Eleve.fromArray(e));
-		eleves.sort(function (eleve1, eleve2) {
-			if (eleve1.nom < eleve2.nom) {
-				return -1;
-			} else if (eleve1.nom > eleve2.nom) {
-				return 1;
-			} else if (eleve1.prenom < eleve2.prenom) {
-				return -1;
-			} else if (eleve1.prenom > eleve2.prenom) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
-		eleves.forEach(e => (e.groupe = nomGroupe, ul.appendChild(e.html_radio())));
-		resultat.addEventListener("click", function () {
-			var disabled = this.parentNode.querySelectorAll("optgroup[disabled]");
-			if (disabled.length > 0) {
-				disabled.forEach((d) => d.removeAttribute("disabled"));
-			} else {
-				this.parentNode.querySelectorAll("optgroup").forEach((ch) => ch.setAttribute("disabled", "disabled"));
-				this.removeAttribute("disabled");
-			}
-		});
-		return resultat;
-	}
+	/**
+	 * Retourne un promesse résolue lorsque le résultat d'une certaine évaluation pour l'élève a été chargée.
+	 * @param   {Evaluation} evaluation L'objet Evaluation
+	 * @returns {Promise}    La promesse avec le résultat correspondant
+	 */
 	loadResultat(evaluation) {
-		evaluation = evaluation || App.evaluation;
 		if (this.resultats[evaluation.id]) {
-			return Promise.resolve();
+			return Promise.resolve(this.resultats[evaluation.id]);
 		}
-		return Resultat.loadJson(evaluation, this).then(json => {
-			this.resultats[evaluation.id] = json;
-			return json;
-		});
+		return Resultat.loadJson(evaluation, this);
 	}
+	/**
+	 * Retourne un objet générique avec les informations pertinentes à l'élève uniquement
+	 * @returns {object} Un objet générique
+	 */
 	toJson() {
 		var resultat = {};
-		resultat.matricule = this.matricule;
-		resultat.nom = this.nom;
-		resultat.prenom = this.prenom;
-		resultat.groupe = this.groupe;
+		this.champsArray.forEach(k => {
+			resultat[k] = this[k];
+		});
+		resultat.groupe = this.groupe; //TODO Voir l'utilité d'ajouter le groupe
 		return resultat;
 	}
-	static html_selectEleve(eleves) {
-		eleves = eleves || this.eleves || {};
+	/**
+	 * Retourne les élèves d'un objet générique "groupe" et les trie au besoin
+	 * @param   {object}  groupe Un objet {matricule: jsonEleve}
+	 * @param   {boolean} trier  Doit-on trier les élèves? défaut: true
+	 * @returns {Eleve[]} Un tableau d'objets Eleve
+	 */
+	static groupe2eleves(groupe, trier = true) {
+		var resultat = Object.values(groupe);
+		resultat = resultat.map((e) => this.from(e));
+		if (trier === false) {
+			return resultat;
+		}
+		resultat.sort(function (eleve1, eleve2) {
+			if (eleve1.nom < eleve2.nom) {
+				return -1;
+			} else if (eleve1.nom > eleve2.nom) {
+				return 1;
+			} else if (eleve1.prenom < eleve2.prenom) {
+				return -1;
+			} else if (eleve1.prenom > eleve2.prenom) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+		return resultat;
+	}
+	/**
+	 * Retourne un objet select représentant les groupes donnés
+	 * @deprecated On utilise les radio à la place
+	 * @param   {object}      eleves Les groupes {nomGroupe: {matricule: jsonEleve}}
+	 * @returns {HTMLElement} Un élément select
+	 */
+	static html_selectGroupesEleves(groupes = {}) {
 		var resultat = document.createElement("select");
 		resultat.setAttribute("id", "eleves");
 		resultat.setAttribute("name", "eleves");
 		resultat.setAttribute("size", "10");
-		for (let nomGroupe in this.eleves) {
-			let groupe = this.eleves[nomGroupe];
+		for (let nomGroupe in groupes) {
+			let groupe = groupes[nomGroupe];
 			resultat.appendChild(this.html_optgroup(nomGroupe, groupe));
 		}
 		resultat.addEventListener("change", this.evt.selectEleve.change);
 		return resultat;
 	}
-	static html_radioEleves(eleves) {
-		eleves = eleves || this.eleves || {};
+	/**
+	 * Retourne
+	 * @param   {[[Type]]} groupes [[Description]]
+	 * @returns {[[Type]]} [[Description]]
+	 */
+	static html_radioEleves(groupes = {}) {
 		var resultat = document.createElement("fieldset");
 		let ul = resultat.appendChild(document.createElement("ul"));
-		for (let nomGroupe in this.eleves) {
+		for (let nomGroupe in groupes) {
+			let groupe = groupes[nomGroupe];
 			let li = ul.appendChild(document.createElement("li"));
-			let h2 = li.appendChild(document.createElement("h2"));
-			h2.addEventListener("click", e => e.target.classList.toggle("folded"));
-			h2.innerHTML = nomGroupe;
-			li.appendChild(this.html_radioGroup(nomGroupe, this.eleves[nomGroupe]));
+			li.appendChild(groupe.html_radiofieldset());
 		}
 		resultat.addEventListener("change", this.evt.selectEleve.change);
 		return resultat;
 	}
-	static fromArray(a) {
-		var resultat = new Eleve();
-		resultat.matricule = a[0];
-		resultat.nom = a[1];
-		resultat.prenom = a[2];
+	/**
+	 * Retourne un objet Eleve à partir d'un array ou d'on objet
+	 * @param   {Array|object} val    Le array à traiter. Format: voir this.champsArray.
+	 * @param   {boolean}      forcer Si l'objet est déjà un Eleve, doit-on en créer un nouveau? défaut: false
+	 * @returns {Eleve}        Un objet Eleve
+	 */
+	static from(val, forcer = false) {
+		if (val instanceof this && !forcer) {
+			return val;
+		}
+		var resultat = new this();
+		if (val instanceof Array) {
+			this.champsArray.forEach((k, i) => {
+				resultat[k] = val[i];
+			});
+		} else if (typeof val === "object") {
+			this.champsArray.forEach(k => {
+				resultat[k] = val[k];
+			});
+		} else {
+			throw "Mauvaises données pour un Eleve";
+		}
 		return resultat;
 	}
-	static loadAll(cours, annee) {
-		this.eleves = null;
-		var colonne = document.querySelector("div.interface>div.body>div.colonne");
-		var form = colonne.appendChild(document.createElement("form"));
-		form.classList.add("eleves");
-		var trigger = form.appendChild(document.createElement("div"));
+	/**
+	 * Retourne un élément form sans les élèves
+	 */
+	static html_form() {
+		var resultat = document.createElement("form");
+		resultat.classList.add("eleves");
+		var trigger = resultat.appendChild(document.createElement("div"));
 		trigger.classList.add("trigger");
 		trigger.innerHTML = "<span>&#x1f881;&nbsp;Élèves&nbsp;&#x1f881;</span>";
-		var header = form.appendChild(document.createElement("header"));
+		var header = resultat.appendChild(document.createElement("header"));
 		var titre = header.appendChild(document.createElement("h1"));
 		titre.innerHTML = "Les élèves";
 		var recherche = header.appendChild(document.createElement("input"));
 		recherche.setAttribute("name", "recherche");
 		recherche.addEventListener("input", e => {
-			this.filtrer(e.target);
+			this.filtrer(e.target.value);
 		});
+		return resultat;
+	}
+	/**
+	 * Retourne une promesse résolue après l'ajout du formulaire avec les élèves
+	 * @param   {string}  cours Le id du cours
+	 * @param   {string}  annee L'année de l'évaluation
+	 * @returns {Promise} Une promesse avec les élèves/groupes
+	 * @todo Séparer le html du json après avoir créé un objet Groupe
+	 */
+	static loadAll(cours, annee) {
+		this.groupes = null; //TODO Vérifier l'utiliter de vider les élèves ici
+		this.eleves = null; //TODO Vérifier l'utiliter de vider les élèves ici
 		var data = {
 			action: "listeEleves",
 			cours: cours,
 			annee: annee
 		};
-		GValue.callApi(data).then(json => {
-			Eleve.eleves = json;
-			form.appendChild(Eleve.html_radioEleves());
+		return GValue.callApi(data).then(json => {
+			var colonne = document.querySelector("div.interface>div.body>div.colonne");
+			var form = colonne.appendChild(this.html_form());
+			this.groupes = {}; //TODO Voir l'utilité de cette propriété ou voir s'il serait mieux de les transformer tout de suite en Eleve
+			for (let k in json) {
+				this.groupes[k] = Groupe.fromJson(k, json[k]);
+			}
+			this.eleves = Groupe.flatten(this.groupes);
+			form.appendChild(Eleve.html_radioEleves(this.groupes));
+			return this.eleves;
 		});
 	}
+	/**
+	 * Retourne une version sans accents d'une chaine de caractères
+	 * @param   {string} texte Une chaine avec accents
+	 * @returns {string} Une chaine sans accents
+	 */
 	static supprimerAccents(texte) {
 		return texte
 			.replace(/[áàâä]/g, 'a')
@@ -216,9 +270,12 @@ export default class Eleve {
 			.replace(/Œ/g, 'OE')
 			.replace(/Æ/g, 'AE');
 	}
+	/**
+	 * Masque les élèves ne correspondant pas à une certaine recherche
+	 * @param {string} recherche La chaine de recherche. Si la chaine est composée de chiffres, on fait une recherche intégrale.
+	 */
 	static filtrer(recherche) {
-		var eleves = Array.from(recherche.form.querySelectorAll("input[type=radio]"));
-		recherche = recherche.value;
+		var eleves = Array.from(document.querySelectorAll("form.eleves input[type=radio]"));
 		if (/^[0-9]+$/.test(recherche)) {
 			recherche = new RegExp(recherche, "i");
 		} else {
@@ -228,36 +285,20 @@ export default class Eleve {
 		}
 		eleves.forEach(input => {
 			var texte = this.supprimerAccents(input.parentNode.textContent);
-			if (recherche.test(texte)) {
-				input.parentNode.classList.remove("cache");
-			} else {
-				input.parentNode.classList.add("cache");
-			}
+			input.parentNode.classList.toggle("cache", !recherche.test(texte));
 		});
 	}
-	static getEleve(matricule, groupe) {
-		groupe = groupe || this.eleves;
-		if (groupe[matricule]) {
-			return groupe[matricule];
-		}
-		for (let k in groupe) {
-			if (typeof groupe[k] === "object") {
-				return this.getEleve(matricule, groupe[k]);
-			}
-		}
-		return null;
-	}
-	static loadJson(matricule) {
-		var eleve = this.getEleve(matricule);
-		return eleve;
-	}
+	/**
+	 * Détermine les propriétés statiques
+	 */
 	static init() {
+		this.champsArray = ["matricule", "nom", "prenom", ];
 		App.log("init", this.name);
 		this.evt = {
 			selectEleve: {
 				change: function (e) {
 					var choix = e.target.obj;
-					choix.loadResultat().then(data => {
+					choix.loadResultat(App.evaluation).then(data => {
 						GValue.resultat = data;
 						data.appliquer();
 					});

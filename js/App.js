@@ -1,33 +1,19 @@
-/*jshint esnext:true, browser:true*/
+/*jslint esnext:true, browser:true*/
+
+/**
+ * Classe représentant l'application
+ */
 class App {
-	static addEventListeners(obj, evts) {
-		for (let k in evts) {
-			obj.addEventListener(k, evts[k]);
-		}
-		return obj;
-	}
-	static setAttribute(element, name, value) {
-		if (value === undefined) {
-			element.removeAttribute(name);
-		} else {
-			element.setAttribute(name, value);
-		}
-		return this;
-	}
-	static setAttributes(element, attributes) {
-		if (!attributes) {
-			return this;
-		}
-		for (let k in attributes) {
-			element.setAttribute(k, attributes[k]);
-		}
-		return this;
-	}
+	/**
+	 * Ajoute une dépendance a l'application
+	 * @param   {string|Array} url Le chemin vers le fichier à charger
+	 * @returns {Promise}      Une promesse résolue lorsque toutes les promesses sont résolues
+	 */
 	static addDependency(url) {
 		if (url instanceof Array) {
 			return Promise.all(url.map(u => this.addDependency(u)));
 		}
-		this.log('Loading "' + url + '"');
+		App.log('Loading "' + url + '"');
 		return new Promise(resolve => {
 			var id;
 			id = url.replace(/[^a-zA-Z0-9\_\-\.]/g, "_");
@@ -39,15 +25,22 @@ class App {
 				promise = this.addScript(url);
 			} else if (url.slice(-4) === ".css") {
 				promise = this.addStyle(url);
+			} else {
+				throw "Mauvais type de fichier : '" + url + "'";
 			}
 			resolve(promise.then(element => {
-				this.log('"'+url+'" loaded.');
+				App.log('"' + url + '" loaded.');
 				element.setAttribute("id", id);
 				this.dependencies[id] = element;
 			}));
 			this.dependencies[id] = true;
 		});
 	}
+	/**
+	 * Ajoute une feuille de style externe à la page
+	 * @param   {string}  url Le chemin vers le fichier
+	 * @returns {Promise} Une promesse résolue lorsque le fichier est chargé
+	 */
 	static addStyle(url) {
 		return new Promise(resolve => {
 			var element;
@@ -60,12 +53,20 @@ class App {
 			document.head.appendChild(element);
 		});
 	}
-	static addScript(url) {
+	/**
+	 * Ajoute un script à la page
+	 * @param   {string}  url    Le chemin vers la page
+	 * @param   {boolean} module Détermine si le fichier doit être chargé comme un module [défaut:true]
+	 * @returns {Promise} Une promesse résolue lorsque le fichier est chargé
+	 */
+	static addScript(url, module = true) {
 		return new Promise(resolve => {
 			var element;
 			element = document.createElement("script");
 			element.setAttribute("src", this.scriptPath(url));
-			element.setAttribute("type", "module");
+			if (module) {
+				element.setAttribute("type", "module");
+			}
 			element.addEventListener("load", e => {
 				resolve(e.target);
 			});
@@ -74,7 +75,6 @@ class App {
 	}
 	/**
 	 * Détermine le chemin actuel du script. Appelé une seule fois dans le init.
-	 * @returns App   - La classe courante
 	 */
 	static setPaths() {
 		var dossierPage = window.location.href.split("/").slice(0, -1);
@@ -92,12 +92,22 @@ class App {
 		}
 		this._pathScript = src.join("/");
 	}
+	/**
+	 * Retourne le chemin d'un fichier relatif à la page ayant intégré le script App.js
+	 * @param   {string} url Le fichier à représenter. Si undefined, retourne le chemin brut vers la page.
+	 * @returns {string} Une url
+	 */
 	static pagePath(url) {
 		if (url === undefined) {
 			return this._pathPage;
 		}
 		return this._pathPage + "/" + url;
 	}
+	/**
+	 * Retourne le chemin d'un fichier relatif au script actuel (App.js)
+	 * @param   {string} url Le fichier à représenter. Si undefined, retourne le chemin brut vers la page.
+	 * @returns {string} Une url
+	 */
 	static scriptPath(url) {
 		if (url === undefined) {
 			return this._pathScript;
@@ -179,19 +189,30 @@ class App {
 		}
 		return resultat;
 	}
-	static creerId(prefixe, amplitude) {
-		amplitude = amplitude || 5;
-		prefixe = prefixe || "";
-		amplitude = Math.pow(10, amplitude);
-		var resultat = new Date().getTime();
-		resultat = resultat * amplitude + Math.floor(Math.random() * amplitude);
-		var alpha = "0123456789abcdefghijklmnopqrstuvwxyz";
-		resultat = resultat.toString(26).split("").map(digit => alpha[alpha.indexOf(digit) + 10]).join("");
-		resultat = prefixe + resultat;
+	/**
+	 * Retourne un id de caractères aléatoires
+	 * @param   {string} prefixe   Un préfixe optionnel à apposer devant le id [défaut:""]
+	 * @param   {number} amplitude Le nombre de caracteres excluant le préfixe [défaut: 5]
+	 * @returns {string} Un id
+	 */
+	static creerId(prefixe = "", amplitude = 5) {
+		var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+		var l = chars.length;
+		var resultat = prefixe;
+		// Le premier caractère n'est pas un nombre
+		resultat += chars[Math.floor(Math.random() * (l-10))];
+		for (let i = 1; i < amplitude; i += 1) {
+			resultat += chars[Math.floor(Math.random() * l)];
+		}
 		return resultat;
 	}
-	static normaliserId(id) {
-		return id
+	/**
+	 * Retourne une version normalisée d'une chaine de caractères pouvant être untilisée en tant que id
+	 * @param   {string} str La chaine à transformer
+	 * @returns {string} Le id résultant
+	 */
+	static normaliserId(str) {
+		return str
 			.toLowerCase()
 			.replace(/[áàâä]/g, 'a')
 			.replace(/[éèêë]/g, 'e')
@@ -204,27 +225,31 @@ class App {
 			.replace(/_+/g, '_')
 			.replace(/^[^a-z0-9]+|_$/g, '');
 	}
+
+	/**
+	 * Retourne une prommesse résolue lorsque la page est chargée ainsique toutes les dépendances
+	 * @returns {Promise} La promesse de chargement
+	 */
 	static load() {
 		return Promise.all([
 			this.addDependency([
-				"../jsmenu/Menu.js",
-				"GValue.js",
-				"Critere.js",
-				"Evaluation.js",
-				"Eleve.js",
-				"Resultat.js",
+//				"../jsmenu/Menu.js",
+//				"GValue.js",
 			]),
 			new Promise(resolve => {
 				window.addEventListener("load", function () {
-					resolve("loaded");
+					App.log("window load");
+					resolve();
 				});
 			}),
 		]);
 	}
+	/**
+	 * Règle les propriétés statiques de la classe.
+	 */
 	static init() {
-		this.loaded = false;
 		var debug = true;
-		this.log = (debug) ? console.log : function () {};
+		App.log = (debug) ? console.log : function () {};
 		this.dependencies = {};
 		this.setPaths();
 		this.data = this.parseUrl(this.scriptURL).data;

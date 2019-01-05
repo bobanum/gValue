@@ -293,6 +293,30 @@ form.eleves {
 		padding: 0;
 		border: none;
 	}
+	fieldset.groupe {
+		border: 1px solid rgba(0, 128, 128, 0.5);
+		margin-top: .5em;
+		padding: .25em;
+		& > legend {
+			font-weight: bold;
+//			font-size: larger;
+			margin-bottom: .25em;
+			&::before {
+				font-family: monospace;
+				display: inline-block;
+				width: 1em;
+				height: 1em;
+				text-align: center;
+				content: "▼";
+				content: "▾";
+			}
+		}
+
+		&.folded > legend::before {
+			content: "◀";
+			content: "▸";
+		}
+	}
 
 	li > h2 {
 		padding: .25em 0;
@@ -444,7 +468,7 @@ input {
 	font: inherit;
 }
 
-.folded + fieldset > ul {
+fieldset.folded > :not(legend) {
 	display: none;
 }
 

@@ -10,6 +10,7 @@ export default class Evaluation extends Critere {
 		this.cours = "";
 		this.annee = "";
 		this._criteres_all = {};
+		this.resultats = {};
 	}
 	get dom() {
 		if (!this._dom) {
@@ -85,7 +86,6 @@ export default class Evaluation extends Critere {
 		};
 		return GValue.callApi(data).then(json => {
 			resultat.fill(json);
-			console.log(resultat.inventaireCriteres());
 			var criteres = resultat.inventaireCriteres();
 			criteres.forEach(c => {
 				c._evaluation = resultat;
