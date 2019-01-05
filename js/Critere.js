@@ -1,7 +1,11 @@
 /*jslint browser:true, esnext:true*/
 /*global App */
-import GValue from "./GValue.js";
-export default class Critere {
+import {GValue} from "./GValue.js";
+
+/**
+ * Représente un critere de correction
+ */
+export class Critere {
 	constructor() {
 		this.id = App.creerId();
 		this.titre = "";
@@ -265,21 +269,6 @@ export default class Critere {
 		return resultat;
 	}
 	/**
-	 * Retourne le label d'un certain champ. Regarde également dans les classes parent. Sinon, retourne le nom du champ.
-	 * @param   {string} champ Le champ à utiliser
-	 * @returns {strig}  Le label
-	 */
-	static label(champ) {
-		var proto;
-		if (this.labels[champ] !== undefined) {
-			return this.labels[champ];
-		} else if (proto = Object.getPrototypeOf(this), proto.label) {
-			return proto.label(champ);
-		} else {
-			return champ;
-		}
-	}
-	/**
 	 * Retourne un élément HTML contenant un label et un contenu dans un div
 	 * @param   {string}             champ   Le nom du champ à afficher
 	 * @param   {HTMLElement|string} contenu Le contenu. Si le contenu est vide, on utilisera la valeur de la propriété.
@@ -400,6 +389,21 @@ export default class Critere {
 	}
 	estCourant() {
 		return this.dom.classList.contains("courant");
+	}
+	/**
+	 * Retourne le label d'un certain champ. Regarde également dans les classes parent. Sinon, retourne le nom du champ.
+	 * @param   {string} champ Le champ à utiliser
+	 * @returns {strig}  Le label
+	 */
+	static label(champ) {
+		var proto;
+		if (this.labels[champ] !== undefined) {
+			return this.labels[champ];
+		} else if (proto = Object.getPrototypeOf(this), proto.label) {
+			return proto.label(champ);
+		} else {
+			return champ;
+		}
 	}
 	/**
 	 * Retourne un nouvel objet avec les propriétés données sous d'objet

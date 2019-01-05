@@ -1,5 +1,5 @@
 /*jslint browser:true, esnext:true*/
-export default class Menu {
+export class Menu {
 	constructor(label) {
 		this.label = label;
 		this.className = "";
@@ -95,11 +95,11 @@ export default class Menu {
 		return result;
 	}
 	/**
-	 * Returns a div filled with tools
+	 * Returns a div filled with tools. xIs called by dom_toolbar
 	 * @param   {object|Array} tools  The tools to display. If Array, creates another subgroup.
 	 * @param   {string}       prefix Prefix to apply to the class (for the icon)
 	 * @returns {HTMLElement}  The resulting element
-	 * @private Is called by dom_toolbar
+	 * @private
 	 */
 	static dom_toolbar_group(tools, prefix) {
 		var result;
@@ -115,11 +115,11 @@ export default class Menu {
 		return result;
 	}
 	/**
-	 * Returns a button of a toolbar
+	 * Returns a button of a toolbar. Called by dom_toolbar_group
 	 * @param   {string}      icon  The class of the button
 	 * @param   {function}    click The "click" event
 	 * @returns {HTMLElement} A <button> element
-	 * @private Called by dom_toolbar_group
+	 * @private
 	 */
 	static dom_toolbar_tool(icon, click) {
 		var result;

@@ -1,7 +1,12 @@
 /*jslint esnext:true,browser:true*/
 /*global App */
-import Evaluation from "./Evaluation.js";
-export default class GValue {
+import {Evaluation} from "./Evaluation.js";
+
+/**
+ * Représente le systeme d'évaluation.
+ * @todo Voir s'il serait mieux de fusionner ou extend App
+ */
+export class GValue {
 	static callApi(data) {
 		return new Promise(resolve => {
 			var xhr = new XMLHttpRequest();

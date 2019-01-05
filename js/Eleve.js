@@ -1,14 +1,14 @@
 /*jslint esnext:true, browser:true*/
 /*global App */
-import GValue from "./GValue.js";
-import Resultat from "./Resultat.js";
-import Groupe from "./Groupe.js";
+import {GValue} from "./GValue.js";
+import {Resultat} from "./Resultat.js";
+import {Groupe} from "./Groupe.js";
 
 /**
  * Représente un élève
  * @todo Évaluer la pertinance de gréer un objet Groupe
  */
-export default class Eleve {
+export class Eleve {
 	/**
 	 * Constructeur
 	 */
@@ -157,9 +157,9 @@ export default class Eleve {
 		return resultat;
 	}
 	/**
-	 * Retourne
-	 * @param   {[[Type]]} groupes [[Description]]
-	 * @returns {[[Type]]} [[Description]]
+	 * Retourne un fieldset contenant les listes de groupes
+	 * @param   {object}      groupes Les groupes a representer
+	 * @returns {HTMLElement} Un fieldset avec des groupes
 	 */
 	static html_radioEleves(groupes = {}) {
 		var resultat = document.createElement("fieldset");

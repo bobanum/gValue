@@ -1,10 +1,14 @@
 /*jslint browser:true, esnext:true*/
 /*global App */
-import Menu from "../jsmenu/Menu.js";
-import GValue from "./GValue.js";
-import Critere from "./Critere.js";
-import Resultat from "./Resultat.js";
-export default class Evaluation extends Critere {
+import {Menu} from "../jsmenu/Menu.js";
+import {GValue} from "./GValue.js";
+import {Critere} from "./Critere.js";
+import {Resultat} from "./Resultat.js";
+
+/**
+ * Représente une évaluation
+ */
+export class Evaluation extends Critere {
 	constructor() {
 		super();
 		this.cours = "";

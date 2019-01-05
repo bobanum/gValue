@@ -1,10 +1,10 @@
 /*jslint esnext:true, browser:true*/
-import Eleve from "./Eleve.js";
+import {Eleve} from "./Eleve.js";
 
 /**
  * Représente un groupe d'élèves
  */
-export default class Groupe {
+export class Groupe {
 	/**
 	 * Constructeur
 	 * @param {object} nom Le nom du groupe

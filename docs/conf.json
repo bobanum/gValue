@@ -2,7 +2,7 @@
     "plugins": [],
     "recurseDepth": 10,
     "opts": {
-        "template": "templates/default",
+        "template": "templates/docdash",
         "encoding": "utf8",
         "destination": "./docs/api",
         "recurse": true,

@@ -1,9 +1,13 @@
 /*jslint esnext:true, browser:true*/
-import GValue from "./GValue.js";
-import Eleve from "./Eleve.js";
-import Evaluation from "./Evaluation.js";
-import Critere from "./Critere.js";
-export default class Resultat {
+import {GValue} from "./GValue.js";
+import {Eleve} from "./Eleve.js";
+import {Evaluation} from "./Evaluation.js";
+import {Critere} from "./Critere.js";
+
+/**
+ * Représente le résultat d'un élève à une évaluation
+ */
+export class Resultat {
 	constructor() {
 		this._evaluation = null;
 		this._eleve = null;

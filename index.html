@@ -8,9 +8,9 @@
 	<link rel="stylesheet" href="images/css/iconesgvalue.css" />
 	<script src="js/App.js"></script>
 	<script type="module">
-		import GValue from "./js/GValue.js";
-		import Evaluation from "./js/Evaluation.js";
-		import Eleve from "./js/Eleve.js";
+		import {GValue} from "./js/GValue.js";
+		import {Evaluation} from "./js/Evaluation.js";
+		import {Eleve} from "./js/Eleve.js";
 		App.load().then(() => {
 			App.mode = App.MODE_EVALUATION;
 			Evaluation.loadJson("web3", "H2018", "projet1").then(data => {
