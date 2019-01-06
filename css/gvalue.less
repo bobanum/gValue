@@ -91,6 +91,10 @@ optgroup:disabled {
 			&:hover,
 			&:focus-within {
 				margin-left: e('calc(-1 * var(--largeur))');
+				.trigger {
+					color: lighten(@couleur-principale, 50%);
+					background-color: @couleur-principale;
+				}
 			}
 
 			.trigger {
@@ -568,7 +572,7 @@ span.label {
 	}
 }
 
-span[data-valeur] {
+:not(.echelle) > span[data-valeur] {
 	&:after {
 		content: "\A0["attr(data-valeur) "]";
 	}

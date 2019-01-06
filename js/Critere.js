@@ -1,27 +1,59 @@
 /*jslint browser:true, esnext:true*/
 /*global App */
-import {GValue} from "./GValue.js";
+import {
+	GValue
+} from "./GValue.js";
 
 /**
  * Représente un critere de correction
+ * @todo EN GÉNÉRAL Utiliser Map.
  */
 export class Critere {
+	/**
+	 * Constructeur
+	 */
 	constructor() {
+		/**
+		 * Le id du critere
+		 * @type {string}
+		 */
 		this.id = App.creerId();
+		/** Le titre */
 		this.titre = "";
-		this._input_valeur = null;
+		/**
+		 * Dom du input
+		 * @type {HTMLElement}
+		 */
+		this._dom_valeur = null;
 		this._valeur = "";
 		this._commentaires = {};
 		this._criteres = {};
+		/** Le critere parent
+		 * @type {Critere} */
 		this.critereParent = null;
 	}
+	/**
+	 * Le DOM principal du critère
+	 * @type {HTMLElement}
+	 */
 	get dom() {
-		if (!this._dom) {
-			this._dom = this.dom_creer();
-			this._dom.obj = this;
+		if (this._dom) {
+			return this._dom;
 		}
+		var resultat = document.createElement("div");
+		resultat.classList.add("critere");
+		resultat.setAttribute("id", "critere_" + this.id);
+		resultat.appendChild(this.html_details());
+		resultat.appendChild(this.html_aides());
+		resultat.appendChild(this.html_criteres());
+		resultat.obj = this;
+		this._dom = resultat;
 		return this._dom;
 	}
+	/**
+	 * Les (sous-)criteres rattachés au critere
+	 * @type {Map<string, Critere>}
+	 */
 	get criteres() {
 		return this._criteres;
 	}
@@ -32,10 +64,17 @@ export class Critere {
 			val.forEach(critere => this.ajouterCritere(critere));
 		} else if (typeof val === "object") {
 			for (let k in val) {
-				this.ajouterCritere(Critere.fromObject(val[k]), k);
+				val[k].id = k;
+				this.ajouterCritere(val[k]);
 			}
+		} else {
+			throw "Mauvaise valeur pour Critere";
 		}
 	}
+	/**
+	 * La valeur fnale du critère (sur combien le critère sera évalué). S'il est nul, on calcul les sous-criteres.
+	 * @type {number}
+	 */
 	get valeur() {
 		if (this._valeur === null || this._valeur === "") {
 			return this.valeurCriteres();
@@ -46,33 +85,20 @@ export class Critere {
 	set valeur(val) {
 		this._valeur = val;
 	}
-	get modeEval() {
-		return App.mode === App.MODE_EVALUATION;
-	}
+	/**
+	 * @type {integer}
+	 * @todo Utiliser Map
+	 */
 	get length() {
 		return Object.keys(this.criteres).length;
 	}
-	inventaireCriteres() {
-		var resultat = [];
-		for (let k in this._criteres) {
-			resultat.push(this._criteres[k]);
-			resultat.push(...this._criteres[k].inventaireCriteres());
-		}
-		return resultat;
-	}
-	dom_creer() {
-		var resultat = document.createElement("div");
-		resultat.classList.add("critere");
-		resultat.setAttribute("id", "critere_" + this.id);
-		resultat.appendChild(this.html_details());
-		resultat.appendChild(this.html_aides());
-		resultat.appendChild(this.html_criteres());
-		return resultat;
-	}
-	get input_valeur() {
+	/**
+	 * @type {HTMLElement}
+	 */
+	get dom_valeur() {
 		var resultat;
-		if (this._input_valeur) {
-			return this._input_valeur;
+		if (this._dom_valeur) {
+			return this._dom_valeur;
 		}
 		resultat = document.createElement("input");
 		resultat.setAttribute("type", "text");
@@ -84,106 +110,155 @@ export class Critere {
 		}
 		resultat.obj = this;
 		resultat.setAttribute("value", this.valeur);
-		this._input_valeur = resultat;
-		this._input_valeur.obj = this;
+		this._dom_valeur = resultat;
+		this._dom_valeur.obj = this;
 		return resultat;
 	}
-	dom_valeur() {
+	/**
+	 * Retourne un tableau récursif des sous-criteres
+	 * @returns {Critere[]} - Un tableau de critères
+	 * @todo Utiliser Map
+	 */
+	inventaireCriteres() {
+		var resultat = [];
+		for (let k in this._criteres) {
+			resultat.push(this._criteres[k]);
+			resultat.push(...this._criteres[k].inventaireCriteres());
+		}
+		return resultat;
+	}
+	/**
+	 * Retourne l'élément DOM d'une aleur
+	 * @returns {HTMLElement} - Un span avec un input et un span
+	 */
+	html_valeur() {
 		var resultat, input;
 		resultat = document.createElement("span");
 		resultat.classList.add("valeur");
-		input = resultat.appendChild(this.input_valeur);
-		if (this.modeEval) {
+		input = resultat.appendChild(this.dom_valeur);
+		if (App.mode === App.MODE_EVALUATION) {
 			let span = resultat.appendChild(document.createElement("span"));
 			span.innerHTML = "/" + this.valeur;
 		}
 		return resultat;
 	}
-	html_echelle(max, nbVals) {
-		var vals = this.echelle(max, nbVals);
+	/**
+	 * Retourne un élément span contenant une série de boutons qui répondent aux événements donnés
+	 * @param   {Map}         boutons - Un objet Map avec les valeurs et les étiquettes des boutons
+	 * @param   {object}      evts    - Un objet contenant les événements à appliquer à chaque bouton
+	 * @returns {HTMLElement} - Un élément span.cliquables>span
+	 */
+	html_cliquables(boutons, evts = {}) {
 		var resultat = document.createElement("span");
-		resultat.classList.add("echelle");
 		resultat.classList.add("cliquables");
-		vals.forEach(function (v) {
+		boutons.forEach((valeur, etiquette) => {
 			let span = resultat.appendChild(document.createElement("span"));
-			v = Math.round(100 * v) / 100;
-			v = v.toString()
+			span.innerHTML = etiquette;
+			span.obj = this;
+			if (valeur !== undefined) {
+				span.setAttribute("data-valeur", valeur);
+				span.setAttribute("title", valeur);
+			}
+			for (let e in evts) {
+				span.addEventListener(e, evts[e]);
+			}
+		});
+		return resultat;
+	}
+	/**
+	 * Retourne un élément HTML représentant une échelle de valeurs
+	 * @param   {number[]}    vals - Un tableau de valeurs (créé habituellement par {@link Critere#echelle})
+	 * @returns {HTMLElement} - Un élément span créé par {@link Critere#html_cliquables}
+	 */
+	html_echelle(vals) {
+		var valeurs = new Map();
+		vals.forEach(val => {
+			let cles = Math.round(100 * val) / 100;
+			cles = cles.toString()
 				.replace(/\.25$/, "&frac14;")
 				.replace(/\.33$/, "&frac13;")
 				.replace(/\.5$/, "&frac12;")
+				.replace(/\.66$/, "&frac23;")
 				.replace(/\.67$/, "&frac23;")
 				.replace(/\.75$/, "&frac34;");
-			span.innerHTML = v;
-			span.obj = this;
-			let evts = this.evt.choix;
-			for (let k in evts) {
-				span.addEventListener(k, evts[k]);
-			}
-		}, this);
+			valeurs.set(cles, val);
+		});
+		var resultat = this.html_cliquables(valeurs, this.evt.choix);
+		resultat.classList.add("echelle");
 		return resultat;
 	}
+	/**
+	 * Retourne un élément cliquable d'une série d'étiquettes ayant une certaine valeur
+	 * @param   {number}      max  - La valeur maximale
+	 * @param   {string[]}    vals - Une série d'étiquettes en ordre croissant
+	 * @returns {HTMLElement} - Un élément créé pas {@link html_cliquables}
+	 */
 	html_choix(max, vals) {
 		var nbVals = vals.length;
 		var echelle = this.echelle(max, nbVals - 1);
-
-		var resultat = document.createElement("span");
+		var valeurs = new Map();
+		vals.forEach(function (cle, i) {
+			valeurs.set(cle, echelle[i]);
+		}, this);
+		var resultat = this.html_cliquables(valeurs, this.evt.choix);
 		resultat.classList.add("choix");
-		resultat.classList.add("cliquables");
-		vals.forEach(function (v, i) {
-			let span = resultat.appendChild(document.createElement("span"));
-			span.innerHTML = v;
-			span.obj = this;
-			span.setAttribute("data-valeur", echelle[i]);
-			span.setAttribute("title", echelle[i]);
-			var evts = this.evt.choix;
-			for (let k in evts) {
-				span.addEventListener(k, evts[k]);
-			}
-		}, this);
 		return resultat;
 	}
-	html_boutons(choix, evts) {
-		var resultat = document.createElement("div");
+	/**
+	 * Retourne un élément HTML permettant de choisir "tout" ou "rien"
+	 * @returns {HTMLElement} - Un élément créé pas {@link html_cliquables}
+	 */
+	html_toutrien() {
+		var valeurs = new Map([["Tout"], ["Rien"]]);
+		var resultat = this.html_cliquables(valeurs, this.evt.toutrien);
 		resultat.classList.add("boutons");
-		resultat.classList.add("cliquables");
-		choix.forEach(function (v) {
-			let span = resultat.appendChild(document.createElement("span"));
-			span.innerHTML = v;
-			span.obj = this;
-			for (let k in evts) {
-				span.addEventListener(k, evts[k]);
-			}
-		}, this);
 		return resultat;
 	}
+	/**
+	 * Retorune une élément HTML div contenant les détails du criteres
+	 * @returns {HTMLElement} - Un élément div.details
+	 */
 	html_details() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");
 		resultat.appendChild(this.html_titre());
-		resultat.appendChild(this.dom_valeur());
+		resultat.appendChild(this.html_valeur());
 		return resultat;
 	}
+	/**
+	 * Retourne un élément HTML label contenant le titre du critère
+	 * @returns {HTMLElement} - L'élément permettane d'afficher le titre
+	 */
 	html_titre() {
 		var resultat = document.createElement("label");
 		resultat.setAttribute("for", "resultat_" + this.id);
 		resultat.innerHTML = this.titre;
 		return resultat;
 	}
+	/**
+	 * Retourne un élément HTML div contenant les aides à la correction : cliquables, comentaires...
+	 * @returns {HTMLElement} - Un élément div.aides
+	 */
 	html_aides() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("aides");
 		if (this.type && this.type.startsWith("echelle")) {
 			let nbVals = parseInt(this.type.slice(7));
-			resultat.appendChild(this.html_echelle(this.valeur, nbVals));
+			let vals = this.echelle(this.valeur, nbVals);
+			resultat.appendChild(this.html_echelle(vals));
 		} else if (this.type && this.type.startsWith("choix")) {
 			let vals = this.type.split(":")[1].split("|");
 			resultat.appendChild(this.html_choix(this.valeur, vals));
 		} else if (this.length > 0) {
-			resultat.appendChild(this.html_boutons(["Tout", "Rien"], this.evt.toutrien));
+			resultat.appendChild(this.html_toutrien());
 		}
 		resultat.appendChild(this.html_commentaires());
 		return resultat;
 	}
+	/**
+	 * Retourne un élément HTML div permettant d'afficher et d'ajouter les commentaires
+	 * @returns {HTMLElement} - Un élément div.commentaires.cliquables>span
+	 */
 	html_commentaires() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("commentaires");
@@ -203,6 +278,11 @@ export class Critere {
 		}
 		return resultat;
 	}
+	/**
+	 * Retourne la somme des valeurs des sous-criteres
+	 * @returns {number} - Une somme de valeurs
+	 * @todo Utiliser Map
+	 */
 	valeurCriteres() {
 		var resultat = 0;
 		for (let k in this._criteres) {
@@ -210,6 +290,13 @@ export class Critere {
 		}
 		return resultat;
 	}
+	/**
+	 * Retourne un array composé d'une série de valeurs ordonnées allant de 0 à max. La distribution des valeurs intermédiaires est logarithmique au besoin.
+	 * @param   {number}   max       - La maleur maximale à attribuer à l'échelle
+	 * @param   {integer}  nbVals    - Le nombre de valeurs à retourner. Par défaut, on retourne le même nombre de valeurs que le max.
+	 * @param   {number}   divisions - Le niveau de précision. Par défaut, il est calculé en fonction des autres valeurs fournies.
+	 * @returns {number[]} - Un tableau de longueur nbVals.
+	 */
 	echelle(max, nbVals, divisions) {
 		nbVals = nbVals || max;
 		divisions = divisions || Math.ceil(nbVals / max);
@@ -221,16 +308,28 @@ export class Critere {
 		}
 		return resultat;
 	}
+	/**
+	 * Retourne un des échelons d'une échelle tenant compte de la fonction logarithmique.
+	 * @param   {number} max       - Ma valeur maximale de l'échelle
+	 * @param   {number} portion   - La portion de l'échelle à représenter [0-1]
+	 * @param   {number} taux      - Le niveau de logarithmie à appliquer
+	 * @param   {number} divisions - Le niveau de précision (décimales) ex.: 2 affichera des demis
+	 * @returns {num}    - Un nombre compris entre 0 et max
+	 */
 	echelon(max, portion, taux = 1, divisions = 1) {
+		console.log(divisions);
 		var resultat = max * Math.pow(portion, taux);
 		resultat = Math.round(divisions * resultat) / divisions;
 		return resultat;
 	}
-	ajouterCritere(critere, id) {
-		if (!(critere instanceof Critere)) {
-			critere = Critere.fromObject(critere);
-		}
-		critere.id = id || critere.id;
+	/**
+	 * Ajoute un sous-critere
+	 * @param   {object}   critere [[Description]]
+	 * @param   {[[Type]]} id      [[Description]]
+	 * @returns {[[Type]]} [[Description]]
+	 */
+	ajouterCritere(critere) {
+		critere = Critere.from(critere);
 		this.criteres[critere.id] = critere;
 		critere.critereParent = this;
 		return critere;
@@ -244,13 +343,15 @@ export class Critere {
 		if (typeof obj !== "object") {
 			return this;
 		}
-		for (let k in obj) {
-			if (obj[k] === undefined) {
-				delete this[k];
-			} else {
-				this[k] = obj[k];
+		Critere.champsArray.forEach(prop => {
+			if (prop in obj) {
+				if (obj[prop] === undefined) {
+					delete this[prop];
+				} else {
+					this[prop] = obj[prop];
+				}
 			}
-		}
+		});
 		return this;
 	}
 	toJson() {
@@ -294,14 +395,10 @@ export class Critere {
 		}
 		return resultat;
 	}
-	choisir(obj) {
-		var choix = [].slice.call(obj.parentNode.children, 0);
-		choix.forEach(e => e.classList.remove("checked"));
-		obj.classList.add("checked");
-		GValue.resultat.valeur(this.id, obj.innerHTML);
-		//		this.dom.querySelector("input").value = obj.innerHTML;
-		this.activerProchain();
-	}
+	/**
+	 * Retourne un élément HTML div contenant les interface des sous-criteres
+	 * @returns {HTMLElement} - Un élément div.criteres
+	 */
 	html_criteres() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("criteres");
@@ -309,6 +406,14 @@ export class Critere {
 			resultat.appendChild(this._criteres[k].dom);
 		}
 		return resultat;
+	}
+	choisir(obj) {
+		var choix = [].slice.call(obj.parentNode.children, 0);
+		choix.forEach(e => e.classList.remove("checked"));
+		obj.classList.add("checked");
+		GValue.resultat.valeur(this.id, obj.innerHTML);
+		//		this.dom.querySelector("input").value = obj.innerHTML;
+		this.activerProchain();
 	}
 	activerProchain() {
 		var prochain;
@@ -410,12 +515,16 @@ export class Critere {
 	 * @param   {object}  obj L'objet contenant les propriétés initiales de l'objet
 	 * @returns {Critere} this
 	 */
-	static fromObject(obj) {
+	static from(obj, forcerNew = false) {
+		if (obj instanceof this && !forcerNew) {
+			return obj;
+		}
 		var resultat = new this();
 		resultat.fill(obj);
 		return resultat;
 	}
 	static init() {
+		this.champsArray = ["id", "titre", "type", "valeur", "criteres", "commentaires"];
 		App.log("init", this.name);
 		this.labels = {
 			id: "Id",

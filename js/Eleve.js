@@ -112,36 +112,9 @@ export class Eleve {
 		return resultat;
 	}
 	/**
-	 * Retourne les élèves d'un objet générique "groupe" et les trie au besoin
-	 * @param   {object}  groupe Un objet {matricule: jsonEleve}
-	 * @param   {boolean} trier  Doit-on trier les élèves? défaut: true
-	 * @returns {Eleve[]} Un tableau d'objets Eleve
-	 */
-	static groupe2eleves(groupe, trier = true) {
-		var resultat = Object.values(groupe);
-		resultat = resultat.map((e) => this.from(e));
-		if (trier === false) {
-			return resultat;
-		}
-		resultat.sort(function (eleve1, eleve2) {
-			if (eleve1.nom < eleve2.nom) {
-				return -1;
-			} else if (eleve1.nom > eleve2.nom) {
-				return 1;
-			} else if (eleve1.prenom < eleve2.prenom) {
-				return -1;
-			} else if (eleve1.prenom > eleve2.prenom) {
-				return 1;
-			} else {
-				return 0;
-			}
-		});
-		return resultat;
-	}
-	/**
 	 * Retourne un objet select représentant les groupes donnés
 	 * @deprecated On utilise les radio à la place
-	 * @param   {object}      eleves Les groupes {nomGroupe: {matricule: jsonEleve}}
+	 * @param   {object}      groupes Les groupes {nomGroupe: {matricule: jsonEleve}}
 	 * @returns {HTMLElement} Un élément select
 	 */
 	static html_selectGroupesEleves(groupes = {}) {

@@ -33,6 +33,7 @@ export class Evaluation extends Critere {
 		return App.normaliserId(this.titre);
 	}
 	dom_creer() {
+		var domSuper = super.dom;
 		var resultat = document.createElement("fieldset");
 		resultat.classList.add("evaluation");
 		resultat.disabled = true;
@@ -40,7 +41,8 @@ export class Evaluation extends Critere {
 			resultat.appendChild(Resultat.dom_identification);
 		}
 		resultat.appendChild(this.dom_options());
-		resultat.appendChild(Critere.prototype.dom_creer.call(this));
+		resultat.appendChild(domSuper);
+//		resultat.appendChild(Critere.prototype.dom_creer.call(this));
 		return resultat;
 	}
 	dom_options() {

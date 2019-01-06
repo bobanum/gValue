@@ -78,6 +78,11 @@ optgroup:disabled > option {
 .colonnes > *.colonne.eleves > form:focus-within {
   margin-left: calc(-1 * var(--largeur));
 }
+.colonnes > *.colonne.eleves > form:hover .trigger,
+.colonnes > *.colonne.eleves > form:focus-within .trigger {
+  color: #d9e6f2;
+  background-color: #336699;
+}
 .colonnes > *.colonne.eleves > form .trigger {
   display: flex;
   align-items: center;
@@ -333,6 +338,11 @@ div.body > *.colonne.eleves > form:hover,
 div.body > *.colonne.eleves > form:focus-within {
   margin-left: calc(-1 * var(--largeur));
 }
+div.body > *.colonne.eleves > form:hover .trigger,
+div.body > *.colonne.eleves > form:focus-within .trigger {
+  color: #d9e6f2;
+  background-color: #336699;
+}
 div.body > *.colonne.eleves > form .trigger {
   display: flex;
   align-items: center;
@@ -531,7 +541,7 @@ span.label::after {
 .courant .critere:first-child > .aides {
   display: inherit;
 }
-span[data-valeur]:after {
+:not(.echelle) > span[data-valeur]:after {
   content: "\A0[" attr(data-valeur) "]";
 }
 @media all and (max-aspect-ratio: 1/1) {
