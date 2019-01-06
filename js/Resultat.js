@@ -187,6 +187,7 @@ export class Resultat {
 	}
 	static init() {
 		this.prototype.fill = Critere.prototype.fill;
+		this.prototype.champsArray = ["criteres", "eleve", "evaluation"];
 		this.evt = {
 			save: {
 				click: function () {

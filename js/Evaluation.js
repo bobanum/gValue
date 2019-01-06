@@ -101,6 +101,7 @@ export class Evaluation extends Critere {
 		});
 	}
 	static init() {
+		this.prototype.champsArray = super.prototype.champsArray.concat(["cours", "annee"]);
 		App.log("init", this.name);
 		this.labels = {
 			cours: "Cours",

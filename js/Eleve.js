@@ -157,11 +157,11 @@ export class Eleve {
 		}
 		var resultat = new this();
 		if (val instanceof Array) {
-			this.champsArray.forEach((k, i) => {
+			resultat.champsArray.forEach((k, i) => {
 				resultat[k] = val[i];
 			});
 		} else if (typeof val === "object") {
-			this.champsArray.forEach(k => {
+			resultat.champsArray.forEach(k => {
 				resultat[k] = val[k];
 			});
 		} else {
@@ -265,7 +265,7 @@ export class Eleve {
 	 * Détermine les propriétés statiques
 	 */
 	static init() {
-		this.champsArray = ["matricule", "nom", "prenom", ];
+		this.prototype.champsArray = ["matricule", "nom", "prenom", ];
 		App.log("init", this.name);
 		this.evt = {
 			selectEleve: {

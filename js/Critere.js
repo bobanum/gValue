@@ -317,7 +317,6 @@ export class Critere {
 	 * @returns {num}    - Un nombre compris entre 0 et max
 	 */
 	echelon(max, portion, taux = 1, divisions = 1) {
-		console.log(divisions);
 		var resultat = max * Math.pow(portion, taux);
 		resultat = Math.round(divisions * resultat) / divisions;
 		return resultat;
@@ -343,7 +342,7 @@ export class Critere {
 		if (typeof obj !== "object") {
 			return this;
 		}
-		Critere.champsArray.forEach(prop => {
+		this.champsArray.forEach(prop => {
 			if (prop in obj) {
 				if (obj[prop] === undefined) {
 					delete this[prop];
@@ -354,18 +353,36 @@ export class Critere {
 		});
 		return this;
 	}
+	/**
+	 * Retourne un objet générique avec toutes les informations du critère
+	 * @returns {object} - L'objet résultant
+	 */
 	toJson() {
 		var resultat = {};
-		resultat.id = this.id;
-		resultat.titre = this.titre;
-		resultat.valeur = this.valeur;
-		resultat.criteres = {};
-		for (let k in this._criteres) {
-			resultat.criteres[k] = this._criteres[k].toJson();
+		this.champsArray.forEach(prop => {
+			var val;
+			if ("_" + prop in this) {
+				val = this["_" + prop];
+			} else if (prop in this) {
+				val = this[prop];
+			}
+			if (typeof val === "object") {
+				resultat[prop] = Object.assign({}, val);
+			} else if (val) {
+				resultat[prop] = val;
+			}
+		});
+		for (let k in resultat.criteres) {
+			resultat.criteres[k] = resultat.criteres[k].toJson();
 		}
-		resultat.commentaires = {};
-		for (let k in this._commentaires) {
-			resultat.commentaires[k] = this._commentaires[k];
+		if (Object.keys(resultat.criteres).length === 0) {
+			delete resultat.criteres;
+		}
+		for (let k in resultat.commentaires) {
+			resultat.commentaires[k] = resultat.commentaires[k].toString();
+		}
+		if (Object.keys(resultat.commentaires).length === 0) {
+			delete resultat.commentaires;
 		}
 		return resultat;
 	}
@@ -407,10 +424,15 @@ export class Critere {
 		}
 		return resultat;
 	}
+	/**
+	 * Coche un des choix
+	 * @param {HTMLElement} obj - Le span à choisir
+	 */
 	choisir(obj) {
-		var choix = [].slice.call(obj.parentNode.children, 0);
+		var choix = Array.from(obj.parentNode.children);
 		choix.forEach(e => e.classList.remove("checked"));
 		obj.classList.add("checked");
+		debugger;
 		GValue.resultat.valeur(this.id, obj.innerHTML);
 		//		this.dom.querySelector("input").value = obj.innerHTML;
 		this.activerProchain();
@@ -524,7 +546,7 @@ export class Critere {
 		return resultat;
 	}
 	static init() {
-		this.champsArray = ["id", "titre", "type", "valeur", "criteres", "commentaires"];
+		this.prototype.champsArray = ["id", "titre", "type", "valeur", "criteres", "commentaires"];
 		App.log("init", this.name);
 		this.labels = {
 			id: "Id",
