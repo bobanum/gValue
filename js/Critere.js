@@ -1,8 +1,8 @@
 /*jslint browser:true, esnext:true*/
 /*global App */
 import {
-	GValue
-} from "./GValue.js";
+	Resultat_Critere
+} from "./Resultat_Critere.js";
 
 /**
  * Représente un critere de correction
@@ -28,6 +28,8 @@ export class Critere {
 		this._valeur = "";
 		this._commentaires = {};
 		this._criteres = {};
+		/** @type {Resultat} */
+		this._resultat = null;
 		/** Le critere parent
 		 * @type {Critere} */
 		this.critereParent = null;
@@ -84,6 +86,30 @@ export class Critere {
 	}
 	set valeur(val) {
 		this._valeur = val;
+	}
+	/** @type {Resultat_Critere} */
+	get resultat() {
+		if (!this._resultat) {
+			this._resultat = new Resultat_Critere(this);
+		}
+		return this._resultat;
+
+	}
+	set resultat(val) {
+		this._resultat = val;
+	}
+	/**
+	 * La valeur de l'objet Resultat_Critere correspondant
+	 * @type {number} */
+	get valeurResultat() {
+		return this.resultat.valeur;
+	}
+	set valeurResultat(val) {
+		if (this.resultat.valeur === val) {
+			return;
+		}
+		this.resultat.valeur = val;
+		this.choisir(this.dom.querySelector("[data-valeur='" + val + "']"));
 	}
 	/**
 	 * @type {integer}
@@ -323,9 +349,8 @@ export class Critere {
 	}
 	/**
 	 * Ajoute un sous-critere
-	 * @param   {object}   critere [[Description]]
-	 * @param   {[[Type]]} id      [[Description]]
-	 * @returns {[[Type]]} [[Description]]
+	 * @param   {object|array|Critere} critere - Le sous-critere à ajouter
+	 * @returns {Critere}              Le sous-critere ajouté
 	 */
 	ajouterCritere(critere) {
 		critere = Critere.from(critere);
@@ -428,36 +453,55 @@ export class Critere {
 	 * Coche un des choix
 	 * @param {HTMLElement} obj - Le span à choisir
 	 */
-	choisir(obj) {
-		var choix = Array.from(obj.parentNode.children);
-		choix.forEach(e => e.classList.remove("checked"));
-		obj.classList.add("checked");
-		debugger;
-		GValue.resultat.valeur(this.id, obj.innerHTML);
-		//		this.dom.querySelector("input").value = obj.innerHTML;
-		this.activerProchain();
+	choisir(spanChoisi) {
+		if (spanChoisi && spanChoisi.classList.contains("checked")) {
+			return this; //C'est déjà celui choisi. Pas besoin de rien faire.
+		}
+		var options = Array.from(spanChoisi.parentNode.children);
+		options.forEach(e => e.classList.remove("checked"));
+		if (!spanChoisi) {
+			return this;
+		}
+		spanChoisi.classList.add("checked");
+		this.valeurResultat = spanChoisi.getAttribute("data-valeur");
+		//TODO S'assurer de la mise à jour du champ
+		return this;
 	}
-	activerProchain() {
-		var prochain;
+	/**
+	 * Retourne le prochain critère
+	 */
+	prochain() {
 		if (this.dom.nextElementSibling) {
-			prochain = this.dom.nextElementSibling.obj;
-		} else {
-			prochain = this.critereParent.dom.nextElementSibling.obj;
-			//			debugger;
+			return this.dom.nextElementSibling.obj;
 		}
-		if (prochain) {
-			prochain.courant(true);
+		if (!this.critereParent) {
+			return this;
 		}
+		if (this.critereParent.dom.nextElementSibling) {
+			return this.critereParent.dom.nextElementSibling.obj;
+		}
+		return this.critereParent.prochain();
 	}
-	tout() {
+	/**
+	 * Permet de donner une valeur à tous les sous-criteres en même temps
+	 * @param   {number}  etat = 1 - La valeur à donner relative au total du critère. 0=rien, 1=tout et toute valeur intermédiaire.
+	 * @returns {Critere} this
+	 */
+	tout(etat = 1) {
 		if (this.length > 0) {
 			for (let k in this.criteres) {
-				this.criteres[k].tout();
+				this.criteres[k].tout(etat);
 			}
 		} else {
-			GValue.resultat.valeur(this.id, this.valeur);
+			this.valeurResultat = etat * this.valeur;
 		}
+		return this;
 	}
+	/**
+	 * Détermine l'état courant d'un critère et adapte la vue en conséquence
+	 * @param   {boolean} etat - L'état à donner. Si undefined, on toggle.
+	 * @returns {Promise} - Une promesse résolue lorsque l'animation est terminée.
+	 */
 	courant(etat) {
 		var etatActuel = this.dom.classList.contains("courant");
 		var courants = document.querySelectorAll('.courant');
@@ -474,16 +518,33 @@ export class Critere {
 			haut = Math.max(haut, 10);
 			haut = conteneur.clientHeight * 0.1;
 
-			this.animer([0, conteneur.scrollTop], [0, courant.offsetTop - haut], 200, function (x, y) {
+			return this.animer([0, conteneur.scrollTop], [0, courant.offsetTop - haut], 200, function (x, y) {
 				conteneur.scrollTo(x, y);
-			})
-			/*.then(data => {
-							console.log("Fin de l'animation.", data);
-						})*/
-			;
+			});
 		}
-		return this.estCourant();
+		return Promise.resolve();
 	}
+	/**
+	 * Avance le critère courant vers le prochain critere. Avec un petit délai afin de voir les éléments activés.
+	 * @returns {Promise<Critere>} - Une promesse résolue lorsque le prochain est pret.
+	 */
+	avancer() {
+		return new Promise(resolve => {
+			window.setTimeout(() => {
+				this.prochain().courant(true).then(resolve);
+			}, 200);
+		}).then(data => {
+			console.log(data);
+		});
+	}
+	/**
+	 * Permet d'animer un élément. L'animation comme telle se fait effectivement dans la fonction callback.
+	 * @param   {number}   debut    La valeur au début
+	 * @param   {number}   fin      La valeur à la fin
+	 * @param   {number}   duree    La durée en secondes
+	 * @param   {function} callback La fonction qui appliquera les valeurs successives
+	 * @returns {[[Type]]} [[Description]]
+	 */
 	animer(debut, fin, duree, callback) {
 		return new Promise(resolve => {
 			var anim = {};
@@ -492,30 +553,22 @@ export class Critere {
 			anim.temps.delta = duree;
 			anim.temps.fin = anim.temps.debut + anim.temps.delta;
 			anim.etat = {};
-			anim.etat.debut = debut;
-			anim.etat.fin = fin;
+			anim.etat.debut = [].concat(debut);
+			anim.etat.fin = [].concat(fin);
 			anim.etat.delta = anim.etat.fin - anim.etat.debut;
 			anim.interval = window.setInterval(() => {
 				var t = new Date().getTime();
 				var ratio = (t - anim.temps.debut) / anim.temps.delta;
-				var e;
-				if (anim.etat.fin instanceof Array) {
-					e = anim.etat.fin.map((e, i) => anim.etat.debut[i] + ratio * (anim.etat.fin[i] - anim.etat.debut[i]));
-					callback.apply(this, e);
-				} else {
-					e = anim.etat.debut + ratio * (anim.etat.fin - anim.etat.debut);
-					callback.call(this, e);
-				}
-				if (t > anim.temps.fin) {
+				var valeurs = anim.etat.fin.map((e, i) => {
+					return anim.etat.debut[i] + ratio * (anim.etat.fin[i] - anim.etat.debut[i]);
+			  	});
+				callback.apply(this, valeurs);
+				if (t >= anim.temps.fin) {
 					window.clearInterval(anim.interval);
 					resolve(this);
 				}
 			}, 20);
 		});
-
-	}
-	estCourant() {
-		return this.dom.classList.contains("courant");
 	}
 	/**
 	 * Retourne le label d'un certain champ. Regarde également dans les classes parent. Sinon, retourne le nom du champ.
@@ -535,7 +588,7 @@ export class Critere {
 	/**
 	 * Retourne un nouvel objet avec les propriétés données sous d'objet
 	 * @param   {object}  obj L'objet contenant les propriétés initiales de l'objet
-	 * @returns {Critere} this
+	 * @returns {Critere} - L'objet créé si besoin est.
 	 */
 	static from(obj, forcerNew = false) {
 		if (obj instanceof this && !forcerNew) {
@@ -545,15 +598,10 @@ export class Critere {
 		resultat.fill(obj);
 		return resultat;
 	}
-	static init() {
-		this.prototype.champsArray = ["id", "titre", "type", "valeur", "criteres", "commentaires"];
-		App.log("init", this.name);
-		this.labels = {
-			id: "Id",
-			titre: "Titre",
-			criteres: "Critères",
-			valeur: "Valeur"
-		};
+	/**
+	 * Détermine les événements relatifs aux criteres
+	 */
+	static setEvents() {
 		this.prototype.evt = {
 			input_resultat: {
 				focus: function ( /*e*/ ) {
@@ -576,23 +624,38 @@ export class Critere {
 			},
 			commentaire: {
 				click: function () {
-					debugger;
+					console.log("click");
 				},
 				dblclick: function () {
-					debugger;
+					console.log("dblclick");
 				}
 			},
 			choix: {
 				click: function () {
-					this.obj.choisir(this);
+					this.obj.choisir(this).avancer();
 				}
 			},
 			toutrien: {
-				click: function () {
-					this.obj.tout();
+				click: function (e) {
+					var etat = (e.currentTarget.innerHTML === "Tout") ? 1 : 0;
+					e.currentTarget.obj.tout(etat).avancer();
 				}
 			}
 		};
+	}
+	/**
+	 * Détermine les propriétés statiques
+	 */
+	static init() {
+		App.log("init", this.name);
+		this.prototype.champsArray = ["id", "titre", "type", "valeur", "criteres", "commentaires"];
+		this.labels = {
+			id: "Id",
+			titre: "Titre",
+			criteres: "Critères",
+			valeur: "Valeur"
+		};
+		this.setEvents();
 	}
 }
 Critere.init();

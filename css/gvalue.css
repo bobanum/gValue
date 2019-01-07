@@ -101,6 +101,7 @@ optgroup:disabled > option {
   transform: rotate(90deg);
 }
 .cliquable {
+  transition: .2s;
   flex: 1 1 auto;
   min-width: 2em;
   display: flex;
@@ -123,6 +124,7 @@ optgroup:disabled > option {
   flex-wrap: wrap;
 }
 .cliquables > * {
+  transition: .2s;
   flex: 1 1 auto;
   min-width: 2em;
   display: flex;

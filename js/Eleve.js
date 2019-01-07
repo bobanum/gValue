@@ -251,15 +251,24 @@ export class Eleve {
 		var eleves = Array.from(document.querySelectorAll("form.eleves input[type=radio]"));
 		if (/^[0-9]+$/.test(recherche)) {
 			recherche = new RegExp(recherche, "i");
+			eleves.forEach(input => {
+				var texte = input.obj.matricule;
+				input.parentNode.classList.toggle("cache", !recherche.test(texte));
+			});
 		} else {
 			recherche = this.supprimerAccents(recherche);
+			console.log(recherche);
 			recherche = recherche.split("").join(".*");
 			recherche = new RegExp(recherche, "i");
+			eleves.forEach(input => {
+				var nomanim = this.supprimerAccents(input.obj.nom+input.obj.prenom+input.obj.matricule);
+				var cacher = !recherche.test(nomanim);
+				// Si on veut également rechercher avec le nom complet (prenom nom)
+				//var nomcomplet = this.supprimerAccents(input.obj.prenom+input.obj.nom+input.obj.matricule);
+				//cacher = cacher && !recherche.test(this.supprimerAccents(nomcomplet));
+				input.parentNode.classList.toggle("cache", cacher);
+			});
 		}
-		eleves.forEach(input => {
-			var texte = this.supprimerAccents(input.parentNode.textContent);
-			input.parentNode.classList.toggle("cache", !recherche.test(texte));
-		});
 	}
 	/**
 	 * Détermine les propriétés statiques
