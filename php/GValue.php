@@ -3,7 +3,8 @@ class GValue {
 	static $path_evaluations = "evaluations";
 	static $path_resultats = "resultats";
 	static function traitement() {
-		if (isset($_POST["action"])) {
+		if (isset($_POST["action"]))
+		{
 			$action = $_POST["action"];
 			if ($action === "saveResultat") {
 				self::verifierDonnees($_POST, ['cours', 'annee', 'evaluation', 'matricule', 'json']);
@@ -16,7 +17,9 @@ class GValue {
 				file_put_contents($path, $_POST['json']);
 				self::outputJson(["resultat"=>"ok"]);
 			}
-		} elseif (isset($_GET["action"])) {
+		}
+		elseif (isset($_GET["action"]))
+		{
 			$action = $_GET["action"];
 			if ($action === "listeEvaluations") {
 				self::outputJson(self::getFolders("evaluations"));
@@ -43,11 +46,69 @@ class GValue {
 				if (file_exists($path)) {
 					self::outputJson(file_get_contents($path));
 				} else {
-					self::outputJson('{}');
+					$resultat = self::creerResultat($_GET['cours'], $_GET['annee'], $_GET['evaluation'], $_GET["matricule"]);
+					self::outputJson($resultat);
 				}
 			}
 			self::outputJson(['erreur'=>"Action '{$action}' invalide."]);
 		}
+		elseif (isset($_GET['evaluation']))
+		{
+			if (empty($_GET['evaluation'])) {
+				self::outputJson(self::listeEvaluations());
+			} else {
+				self::outputJsonFile(self::pathEvaluations($_GET['evaluation'].".json"));
+			}
+		} elseif (isset($_GET['eleve'])){
+			if (file_exists(self::pathResultats($_GET['eleve'].".json"))) {
+				self::outputJsonFile(self::pathResultats($_GET['eleve'].".json"));
+			} elseif (file_exists(self::pathEvaluations($_GET['eleve']."/eleves.json"))) {
+				self::outputJsonFile(self::pathEvaluations($_GET['eleve']."/eleves.json"));
+			} else {
+				//Pas utilisé encore
+				$resultat = self::creerResultat();
+				self::outputJson([]);
+			}
+		}
+	}
+	static function pathEvaluations($fic = "") {
+		$resultat = realpath(__DIR__."/../".self::$path_evaluations);
+		if ($fic) {
+			$resultat .= "/".$fic;
+		}
+		return $resultat;
+	}
+	static function pathResultats($fic = "") {
+		$resultat = realpath(__DIR__."/../".self::$path_resultats);
+		if ($fic) {
+			$resultat .= "/".$fic;
+		}
+		return $resultat;
+	}
+	static function creerResultat($cours, $session, $evaluation, $matricule) {
+		$eval = json_decode(file_get_contents(self::pathEvaluations("$cours/$session/$evaluation.json")));
+		$eleve = self::trouverEleve($cours, $session, $matricule);
+		$resultat = [
+			'eleve'=>$eleve,
+			'criteres'=>new \stdClass,
+			'evaluation'=>$eval,
+		];
+		return $resultat;
+	}
+	static function trouverEleve($cours, $session, $matricule) {
+		$eleves = json_decode(file_get_contents(self::pathEvaluations("$cours/$session/eleves.json")), true);
+		foreach($eleves as $idGroupe=>$groupe) {
+			if (isset($groupe[$matricule])) {
+				$groupe[$matricule]['groupe'] = $idGroupe;
+				return $groupe[$matricule];
+			}
+		}
+		return [
+			'matricule'=>$matricule,
+			'nom'=>'',
+			'prenom'=>'',
+			'groupe'=>'',
+		];
 	}
 	static function creerPath($path) {
 		if (!file_exists($path)) {
@@ -103,7 +164,29 @@ class GValue {
 		if (!is_string($json)) {
 			$json = json_encode($json);
 		}
+		header("Access-Control-Allow-Origin: *");
 		header("content-type: application/json");
 		exit($json);
+	}
+	static function outputJsonFile($file) {
+		header("Access-Control-Allow-Origin: *");
+		header("content-type: application/json");
+		readfile($file);
+	}
+	static function listeEvaluations() {
+		$resultat = [];
+		$evals = glob(self::pathEvaluations("*/*/*.json"));
+		foreach ($evals as $fic) {
+			$eval = explode("/", $fic);
+			$eval = array_slice($eval, -3);
+			if ($eval[2] !== "eleves.json") {
+				$eval[2] = substr($eval[2], 0, -5);
+				$eval = array_combine(['cours', 'session', 'json'], $eval);
+				$json = json_decode(file_get_contents($fic));
+				$eval['titre'] = $json->titre;
+				$resultat[] = $eval;
+			}
+		}
+		return $resultat;
 	}
 }

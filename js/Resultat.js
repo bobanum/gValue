@@ -184,7 +184,7 @@ export class Resultat {
 			resultat.evaluation = evaluation;
 			resultat.fill(json);
 			eleve.resultats[evaluation.id] = resultat;
-			evaluation.resultats[eleve.id] = resultat;
+			evaluation.resultats[eleve.matricule] = resultat;
 			return resultat;
 		});
 	}

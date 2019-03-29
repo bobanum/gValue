@@ -13,12 +13,12 @@
 		import {Eleve} from "./js/Eleve.js";
 		App.load().then(() => {
 			App.mode = App.MODE_EVALUATION;
-			Evaluation.loadJson("web3", "H2018", "projet1").then(data => {
+			Evaluation.loadJson("web3", "H2019", "misession_simpsons").then(data => {
 				App.evaluation = data;
 				document.querySelector("div.interface>div.body>div.main").appendChild(App.evaluation.dom);
 			});
 
-			Eleve.loadAll("web3", "H2018");
+			Eleve.loadAll("web3", "H2019");
 		});
 
 	</script>

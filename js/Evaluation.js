@@ -1,21 +1,41 @@
 /*jslint browser:true, esnext:true*/
 /*global App */
-import {Menu} from "../jsmenu/Menu.js";
-import {GValue} from "./GValue.js";
-import {Critere} from "./Critere.js";
-import {Resultat} from "./Resultat.js";
+import {
+	Menu
+} from "../jsmenu/Menu.js";
+import {
+	GValue
+} from "./GValue.js";
+import {
+	Critere
+} from "./Critere.js";
+import {
+	Resultat
+} from "./Resultat.js";
 
 /**
  * Représente une évaluation
  */
 export class Evaluation extends Critere {
+	/**
+	 * Constructeur
+	 */
 	constructor() {
 		super();
+		/** {string} Le nom du cours */
 		this.cours = "";
-		this.annee = "";
+		/** {string} L'année de l'évaluation */
+		var date = new Date();	// On utilise la session actuelle par défaut.
+		this.annee = ((date.getMonth() < 7) ? "h" : "a") + date.getFullYear();
+		/** {object} La liste de tous les critères de l'évaluation */
 		this._criteres_all = {};
+		/** {matricule: Eleve} Les objets (par élève) Resultat associés a cette évaluation.  */
 		this.resultats = {};
 	}
+	/**
+	 * Retourne l'élément HTML représentant l'évaluation
+	 * @returns {HTMLElement} - Un élément fieldset créé pas {@link #dom_creer} par
+	 */
 	get dom() {
 		if (!this._dom) {
 			this._dom = this.dom_creer();
@@ -23,15 +43,32 @@ export class Evaluation extends Critere {
 		}
 		return this._dom;
 	}
+	/**
+	 * Retourne une version normalisée du titre du cours associé à l'évaluation
+	 * @returns {string} - Une chaine normalisée.
+	 */
 	get coursId() {
+		//TODO Voir la pertinence d'utiliser l'objet cours.
 		return App.normaliserId(this.cours);
 	}
+	/**
+	 * Retourne une version normalisée de l'année
+	 * @returns {string} Une chaine normalisée
+	 */
 	get anneeId() {
 		return App.normaliserId(this.annee);
 	}
+	/**
+	 * Retourne une version normalisée du titre de l'évaluation
+	 * @returns {string} Une chaine normalisée
+	 */
 	get titreId() {
 		return App.normaliserId(this.titre);
 	}
+	/**
+	 * Crée et retourne l'élément HTML fieldset représentant l'évaluation
+	 * @returns {HTMLElement} - Un élément fieldset.evaluation
+	 */
 	dom_creer() {
 		var domSuper = super.dom;
 		var resultat = document.createElement("fieldset");
@@ -40,11 +77,15 @@ export class Evaluation extends Critere {
 		if (App.mode === App.MODE_EVALUATION) {
 			resultat.appendChild(Resultat.dom_identification);
 		}
+		//TODO Faire en sorte que les options soient créé par les bons objets. Notamment Resultat, App et/ou GValue.
 		resultat.appendChild(this.dom_options());
 		resultat.appendChild(domSuper);
-//		resultat.appendChild(Critere.prototype.dom_creer.call(this));
 		return resultat;
 	}
+	/**
+	 * Retourne le menu relatif à l'évaluation et à son résultats.
+	 * @returns {HTMLElement} Un élément fieldset.toolbar.options
+	 */
 	dom_options() {
 		var resultat;
 		resultat = Menu.dom_toolbar({
@@ -54,6 +95,10 @@ export class Evaluation extends Critere {
 		resultat.classList.add("options");
 		return resultat;
 	}
+	/**
+	 * Retourne l'élément HTML des détails de l'évaluation
+	 * @returns {HTMLElement} - Un élément div.details
+	 */
 	html_details() {
 		var resultat = document.createElement("div");
 		resultat.classList.add("details");
@@ -62,7 +107,11 @@ export class Evaluation extends Critere {
 		resultat.appendChild(this.html_ligneDonnees("titre"));
 		return resultat;
 	}
-	loadJson() {
+	/**
+	 * Retourne une promesse résolue au chargement de l'évaluation
+	 * @returns {Promise<object>} Une promesse contenant l'évaluation
+	 */
+	zzzloadJson() {
 		var data = {
 			action: "loadEvaluation",
 			cours: this.coursId,

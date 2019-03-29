@@ -1,0 +1,186 @@
+{
+	"annee": "2019",
+	"cours": "Intégration Web III",
+	"valeur": null,
+	"titre": "Examen de misession: &quot;Mes simpson&quot;",
+	"criteres": [
+		{
+			"id": "bpgfriqcghdym",
+			"titre": "simpsons.inc.php",
+			"valeur": null,
+			"criteres": [
+				{
+					"id": "bpgfrljudjnes",
+					"titre": "Général",
+					"valeur": null,
+					"criteres": [
+						{
+							"id": "bpgfrljudsbga",
+							"titre": "Création de la variable $simpsons",
+							"valeur": 1,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrljudgjxg",
+							"titre": "Clé des éléments",
+							"valeur": 1,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrljudgjxh",
+							"titre": "Structure d'un personnage (noms des données, bonnes valeurs, complet)",
+							"valeur": 3,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwqlwy",
+							"titre": "Ajout de 5 personnages",
+							"valeur": 2,
+							"aides": ["echelle"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "bpgfriqcfxsks",
+			"titre": "Personnage.class.php",
+			"valeur": 14,
+			"criteres": [
+				{
+					"id": "bpgfrguuwsurg",
+					"titre": "Général",
+					"valeur": 3,
+					"criteres": [
+						{
+							"id": "bpgfrljudhvfc",
+							"titre": "Création des méthodes",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwqaey",
+							"titre": "Valeur de retour",
+							"valeur": 1,
+							"aides": ["echelle"]
+						}
+					]
+				},
+				{
+					"id": "bpgfrguuwngmi",
+					"titre": "html_personnageIndex",
+					"valeur": 5,
+					"criteres": [
+						{
+							"id": "bpgfrguuwrgou",
+							"titre": "Bon paramètre",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwopgy",
+							"titre": "Composition du HTML (2 variables)",
+							"valeur": 3,
+							"aides": ["echelle"]
+						}
+					]
+				},
+				{
+					"id": "bpgfriqcgdfie",
+					"titre": "html_personnageDetails",
+					"valeur": 6,
+					"criteres": [
+						{
+							"id": "bpgfrguuwpflq",
+							"titre": "Bon paramètre",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwpzvc",
+							"titre": "Composition du HTML (6 variables)",
+							"valeur": 4,
+							"aides": ["echelle"]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "bpgfriqcgfwge",
+			"titre": "Pages",
+			"valeur": 14,
+			"criteres": [
+				{
+					"id": "bpgfrljudiwqy",
+					"titre": "Général",
+					"valeur": 3,
+					"criteres": [
+						{
+							"id": "bpgfrguuwshlw",
+							"titre": "Inclusion de 2 fichiers",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwpvao",
+							"titre": "Inclusion de headerfooter.php",
+							"valeur": 1,
+							"aides": ["echelle"]
+						}
+					]
+				},
+				{
+					"id": "bpgfriqcgfbem",
+					"titre": "Page index.php",
+					"valeur": 4,
+					"criteres": [
+						{
+							"id": "bpgfrguuwnjzq",
+							"titre": "Composition du HTML (utilisation de la bonne méthode)",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrljudjufw",
+							"titre": "Boucle",
+							"valeur": 2,
+							"aides": ["echelle"]
+						}
+					]
+				},
+				{
+					"id": "bpgfriqcggqbw",
+					"titre": "Page details.php",
+					"valeur": 7,
+					"criteres": [
+						{
+							"id": "bpgfrguuwqsom",
+							"titre": "Récupération de l'id dans l'adresse avec redirection",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwqcku",
+							"titre": "Récupération du bon personnage avec redirection",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwpsmi",
+							"titre": "Composition du HTML (utilisation de la bonne méthode)",
+							"valeur": 2,
+							"aides": ["echelle"]
+						},
+						{
+							"id": "bpgfrguuwqbky",
+							"titre": "Affichage du nom français dans le title",
+							"valeur": 1,
+							"aides": ["echelle"]
+						}
+					]
+				}
+			]
+		}
+	]
+}
