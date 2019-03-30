@@ -1,0 +1,51 @@
+{
+	"titre": "Hiver 2019",
+	"eleves": 	{
+		"groupe_101_mercredi": [
+			{"matricule": "1636081", "nom": "Caron", "prenom": "Dominic"},
+			{"matricule": "1663498", "nom": "Cleary", "prenom": "Jonathan"},
+			{"matricule": "1763225", "nom": "D'Addona", "prenom": "Alexandre"},
+			{"matricule": "1748355", "nom": "Demers", "prenom": "Christophe"},
+			{"matricule": "1643385", "nom": "Gobeil", "prenom": "Jessica"},
+			{"matricule": "1735538", "nom": "Guertin", "prenom": "Gabriel"},
+			{"matricule": "1211030", "nom": "Lacas", "prenom": "Hughes P."},
+			{"matricule": "1644784", "nom": "Larouche", "prenom": "Roxanne"},
+			{"matricule": "1375687", "nom": "Lefebvre", "prenom": "Félix"},
+			{"matricule": "1543522", "nom": "Lévesque", "prenom": "Alexandre"},
+			{"matricule": "1673552", "nom": "Maitland", "prenom": "Justin"},
+			{"matricule": "1137643", "nom": "Matta", "prenom": "Anthony"},
+			{"matricule": "1184188", "nom": "Michaud", "prenom": "Gabrielle"},
+			{"matricule": "1664052", "nom": "Pellerin", "prenom": "Élliot"},
+			{"matricule": "1648582", "nom": "Perron", "prenom": "Philippe"},
+			{"matricule": "1577999", "nom": "Pilon", "prenom": "Mélissa"},
+			{"matricule": "1621190", "nom": "Ratelle-Lafleur", "prenom": "Julien"},
+			{"matricule": "1735743", "nom": "Ritchie-Corbeil", "prenom": "Hary"},
+			{"matricule": "1728047", "nom": "Rose", "prenom": "Maxime"},
+			{"matricule": "1713561", "nom": "Roy-Couillard", "prenom": "Cathy"}
+		],
+		"groupe_102_mardi": [
+			{"matricule": "1527280", "nom": "Bouffard", "prenom": "Michaël"},
+			{"matricule": "1078895", "nom": "Boulet", "prenom": "Joé"},
+			{"matricule": "1622512", "nom": "Caisse", "prenom": "Alex"},
+			{"matricule": "1577482", "nom": "Carmel", "prenom": "Anthony"},
+			{"matricule": "1635479", "nom": "Castellon", "prenom": "Marc-André"},
+			{"matricule": "1426607", "nom": "Champagne", "prenom": "Marc-André"},
+			{"matricule": "1729918", "nom": "Demers", "prenom": "Vincent"},
+			{"matricule": "1738656", "nom": "Desautels", "prenom": "Thomas"},
+			{"matricule": "1723798", "nom": "Doucet", "prenom": "Antonin"},
+			{"matricule": "1649810", "nom": "Gouger-Lord", "prenom": "Alexandre"},
+			{"matricule": "0466128", "nom": "Harvey", "prenom": "Myriam"},
+			{"matricule": "1652473", "nom": "Laliberté", "prenom": "Félix"},
+			{"matricule": "1755882", "nom": "Lamoureux", "prenom": "Alexandra"},
+			{"matricule": "1707386", "nom": "Latreille", "prenom": "Danick"},
+			{"matricule": "1567931", "nom": "Lavallée", "prenom": "Julien"},
+			{"matricule": "1437962", "nom": "Legault", "prenom": "Amélie"},
+			{"matricule": "1324836", "nom": "Lévesque", "prenom": "Nicolas"},
+			{"matricule": "1405598", "nom": "Proulx", "prenom": "Pascal"},
+			{"matricule": "1279722", "nom": "Rochon", "prenom": "Benoit"},
+			{"matricule": "1550699", "nom": "Roger", "prenom": "Clément"},
+			{"matricule": "1386573", "nom": "Tardif", "prenom": "Ludovic"},
+			{"matricule": "1636185", "nom": "Turmel", "prenom": "Nicolas"}
+		]
+	}
+}

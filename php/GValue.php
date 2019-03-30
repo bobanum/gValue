@@ -1,4 +1,5 @@
 <?php
+namespace App;
 class GValue {
 	static $path_evaluations = "evaluations";
 	static $path_resultats = "resultats";
@@ -34,7 +35,7 @@ class GValue {
 			} elseif ($action === "listeEleves") {
 				self::verifierDonnees($_GET, ['cours', 'annee']);
 				$path = self::$path_evaluations;
-				$path = "{$path}/{$_GET['cours']}/{$_GET['annee']}/eleves.json";
+				$path = "{$path}/{$_GET['cours']}/{$_GET['annee']}/_eleves.json";
 				if (!file_exists($path)) {
 					self::outputJson(["erreur" => "Élèves inexistants [{$path}]."]);
 				}
@@ -62,12 +63,29 @@ class GValue {
 		} elseif (isset($_GET['eleve'])){
 			if (file_exists(self::pathResultats($_GET['eleve'].".json"))) {
 				self::outputJsonFile(self::pathResultats($_GET['eleve'].".json"));
-			} elseif (file_exists(self::pathEvaluations($_GET['eleve']."/eleves.json"))) {
-				self::outputJsonFile(self::pathEvaluations($_GET['eleve']."/eleves.json"));
+			} elseif (file_exists(self::pathEvaluations($_GET['eleve']."/_eleves.json"))) {
+				self::outputJsonFile(self::pathEvaluations($_GET['eleve']."/_eleves.json"));
+			} elseif (file_exists(self::pathEvaluations($_GET['eleve']."/_eleves.json"))) {
+				self::outputJsonFile(self::pathEvaluations($_GET['eleve']."/_eleves.json"));
 			} else {
 				//Pas utilisé encore
 				$resultat = self::creerResultat();
 				self::outputJson([]);
+			}
+		} elseif (isset($_GET['cours'])){
+			$cours = $_GET['cours'];
+			if (empty($cours)) {
+				self::outputJson(self::listeCours());
+			} elseif (isset($_GET['session'])){
+				$session = $_GET['session'];
+				if (empty($session)) {
+					self::outputJson(self::listeSessions($cours));
+				} else {
+	//				self::outputJsonFile(self::pathEvaluations($_GET['evaluation'].".json"));
+				}
+			} else {
+				//retourner la config du cours
+				self::outputJson(self::listeSessions($cours));
 			}
 		}
 	}
@@ -88,19 +106,47 @@ class GValue {
 	static function creerResultat($cours, $session, $evaluation, $matricule) {
 		$eval = json_decode(file_get_contents(self::pathEvaluations("$cours/$session/$evaluation.json")));
 		$eleve = self::trouverEleve($cours, $session, $matricule);
-		$resultat = [
-			'eleve'=>$eleve,
-			'criteres'=>new \stdClass,
-			'evaluation'=>$eval,
-		];
+		$resultat = new \stdClass;
+		$resultat->eleve = $eleve;
+		$resultat->criteres = new \stdClass;
+		$resultat->evaluation = $eval;
 		return $resultat;
 	}
+	static function normaliserResultats(&$criteres, &$resultats) {
+		if (!$criteres) {
+			return;
+		}
+		foreach($criteres as $critere) {
+			if (!isset($resultats->criteres[$critere->id])) {
+				$resultats->criteres[$critere->id] = [
+					"id"=> $critere->id,
+					"valeur"=> null,
+					"commentaires"=> new \stdClass,
+				];
+			}
+			self::normaliserResultats($critere->criteres, $resultats);
+		}
+	}
+	static function config($cours, $session="") {
+		$path = self::pathEvaluations($cours);
+		if ($session) {
+			$path .= "/$session";
+		}
+		$path .= "/_config.json";
+		if (!file_exists($path)) {
+			return new \stdClass;
+		}
+ 		return json_decode(file_get_contents($path));
+	}
 	static function trouverEleve($cours, $session, $matricule) {
-		$eleves = json_decode(file_get_contents(self::pathEvaluations("$cours/$session/eleves.json")), true);
+		$config = self::config($cours, $session);
+		$eleves = $config->eleves;
 		foreach($eleves as $idGroupe=>$groupe) {
-			if (isset($groupe[$matricule])) {
-				$groupe[$matricule]['groupe'] = $idGroupe;
-				return $groupe[$matricule];
+			foreach($groupe as $eleve) {
+				if ($eleve->matricule === $matricule) {
+					$eleve->groupe = $idGroupe;
+					return $eleve;
+				}
 			}
 		}
 		return [
@@ -173,13 +219,49 @@ class GValue {
 		header("content-type: application/json");
 		readfile($file);
 	}
-	static function listeEvaluations() {
+	static function listeEleves($cours, $session, $groupe="") {
 		$resultat = [];
-		$evals = glob(self::pathEvaluations("*/*/*.json"));
+		$path = self::pathEvaluations("$cours/$session/_config.json");
+		$config = json_decode(file_get_contents($path));
+		if ($groupe) {
+			return $config->eleves->$groupe;
+		} else {
+			return $config->eleves;
+		}
+	}
+	static function listeCours() {
+		$resultat = [];
+		$cours = glob(self::pathEvaluations("*"), GLOB_ONLYDIR);
+		foreach ($cours as $fic) {
+			if (file_exists("$fic/_config.json")) {
+				$config = json_decode(file_get_contents("$fic/_config.json"));
+				$titre = $config->titre;
+			} else {
+				$titre = basename($fic);
+			}
+			$resultat[basename($fic)] = $titre;
+		}
+		return $resultat;
+	}
+	static function listeSessions($cours = "*") {
+		$resultat = [];
+		$sessions = glob(self::pathEvaluations("$cours/*/_config.json"));
+		foreach ($sessions as $fic) {
+			$config = json_decode(file_get_contents($fic));
+			$path = explode("/", $fic);
+			$path = array_slice($path, -3, 2);
+			$path = implode("/", $path);
+			$resultat[$path] = $config->titre;
+		}
+		return $resultat;
+	}
+	static function listeEvaluations($cours = "*", $session = "*") {
+		$resultat = [];
+		$evals = glob(self::pathEvaluations("$cours/$session/*.json"));
 		foreach ($evals as $fic) {
 			$eval = explode("/", $fic);
 			$eval = array_slice($eval, -3);
-			if ($eval[2] !== "eleves.json") {
+			if ($eval[2][0] !== "_") {
 				$eval[2] = substr($eval[2], 0, -5);
 				$eval = array_combine(['cours', 'session', 'json'], $eval);
 				$json = json_decode(file_get_contents($fic));
@@ -188,5 +270,20 @@ class GValue {
 			}
 		}
 		return $resultat;
+	}
+	static function evaluation($cours, $session, $evaluation) {
+		$path = self::pathEvaluations("$cours/$session/$evaluation.json");
+		return json_decode(file_get_contents($path));
+	}
+	static function resultat($cours, $session, $evaluation, $matricule) {
+		$path = self::pathResultats("{$cours}/{$session}/{$evaluation}/{$matricule}.json");
+		if (file_exists($path)) {
+			$resultats = json_decode(file_get_contents($path));
+		} else {
+			$resultats = self::creerResultat($cours, $session, $evaluation, $matricule);
+		}
+		$resultats->evaluation = self::evaluation($cours, $session, $evaluation);
+		self::normaliserResultats($resultats->evaluation->criteres, $resultats->criteres);
+		self::outputJson($resultats);
 	}
 }
