@@ -1,24 +1,24 @@
 {
-	"annee": "2019",
-	"cours": "Intégration Web III",
-	"valeur": null,
+	"session": "H2019",
+	"session_titre": "Hiver 2019",
+	"cours": "web3",
+	"cours_titre": "Intégration Web III",
 	"titre": "Examen de misession: &quot;Mes simpson&quot;",
 	"criteres": [
 		{
 			"id": "bpgfriqcghdym",
 			"titre": "simpsons.inc.php",
-			"valeur": null,
 			"criteres": [
 				{
 					"id": "bpgfrljudjnes",
 					"titre": "Général",
-					"valeur": null,
 					"criteres": [
 						{
 							"id": "bpgfrljudsbga",
 							"titre": "Création de la variable $simpsons",
 							"valeur": 1,
-							"aides": ["echelle"]
+							"aides": ["echelle"],
+							"commentaires": {"adsadasdas": "WOW ça marghe très bien", "xdsadasdas": "Un autre commentaire"}
 						},
 						{
 							"id": "bpgfrljudgjxg",
@@ -45,12 +45,10 @@
 		{
 			"id": "bpgfriqcfxsks",
 			"titre": "Personnage.class.php",
-			"valeur": 14,
 			"criteres": [
 				{
 					"id": "bpgfrguuwsurg",
 					"titre": "Général",
-					"valeur": 3,
 					"criteres": [
 						{
 							"id": "bpgfrljudhvfc",
@@ -69,7 +67,6 @@
 				{
 					"id": "bpgfrguuwngmi",
 					"titre": "html_personnageIndex",
-					"valeur": 5,
 					"criteres": [
 						{
 							"id": "bpgfrguuwrgou",
@@ -88,7 +85,6 @@
 				{
 					"id": "bpgfriqcgdfie",
 					"titre": "html_personnageDetails",
-					"valeur": 6,
 					"criteres": [
 						{
 							"id": "bpgfrguuwpflq",
@@ -109,12 +105,10 @@
 		{
 			"id": "bpgfriqcgfwge",
 			"titre": "Pages",
-			"valeur": 14,
 			"criteres": [
 				{
 					"id": "bpgfrljudiwqy",
 					"titre": "Général",
-					"valeur": 3,
 					"criteres": [
 						{
 							"id": "bpgfrguuwshlw",
@@ -133,7 +127,6 @@
 				{
 					"id": "bpgfriqcgfbem",
 					"titre": "Page index.php",
-					"valeur": 4,
 					"criteres": [
 						{
 							"id": "bpgfrguuwnjzq",
@@ -152,7 +145,6 @@
 				{
 					"id": "bpgfriqcggqbw",
 					"titre": "Page details.php",
-					"valeur": 7,
 					"criteres": [
 						{
 							"id": "bpgfrguuwqsom",

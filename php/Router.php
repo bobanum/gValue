@@ -16,6 +16,14 @@ class Router {
 	}
 	static function traiter($routes) {
 		$pathinfo = $_SERVER['PATH_INFO'];
+		if (substr($pathinfo, -1) === "/") {
+			$pathinfo = substr($pathinfo, 0, -1);
+		}
+		$verb = $_SERVER['REQUEST_METHOD'];
+		if ($verb === 'OPTIONS') {
+			$verb = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
+		}
+		$routes = $routes[$verb];
 		foreach($routes as $route=>$action) {
 			if ($route[0] !== "/") {
 				$route = "/$route";

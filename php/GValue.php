@@ -103,28 +103,64 @@ class GValue {
 		}
 		return $resultat;
 	}
-	static function creerResultat($cours, $session, $evaluation, $matricule) {
-		$eval = json_decode(file_get_contents(self::pathEvaluations("$cours/$session/$evaluation.json")));
-		$eleve = self::trouverEleve($cours, $session, $matricule);
-		$resultat = new \stdClass;
-		$resultat->eleve = $eleve;
-		$resultat->criteres = new \stdClass;
-		$resultat->evaluation = $eval;
-		return $resultat;
-	}
-	static function normaliserResultats(&$criteres, &$resultats) {
-		if (!$criteres) {
-			return;
+	static function creerResultat($evaluation, $matricule) {
+		$eleve = self::trouverEleve($evaluation->cours, $evaluation->session, $matricule);
+		foreach($eleve as $prop=>$val) {
+			$evaluation->$prop = $val;
 		}
-		foreach($criteres as $critere) {
-			if (!isset($resultats->criteres[$critere->id])) {
-				$resultats->criteres[$critere->id] = [
-					"id"=> $critere->id,
-					"valeur"=> null,
-					"commentaires"=> new \stdClass,
-				];
+		return $evaluation;
+	}
+	static function normaliserResultats(&$vieux, &$nouveau) {
+		self::normaliserCriteres($vieux->criteres, $nouveau->criteres);
+		if(count($vieux->criteres) === 0) {
+			unset($vieux->criteres);
+		}
+		$props = ['session','session_titre','cours','cours_titre','titre','valeur','matricule','nom','prenom','groupe',];
+		foreach($props as $prop) {
+			if (isset($vieux->$prop) && isset($nouveau->$prop) && $vieux->$prop === $nouveau->$prop) {
+				unset($vieux->$prop);
 			}
-			self::normaliserResultats($critere->criteres, $resultats);
+		}
+		if (count((array) $vieux) > 0) {
+			$nouveau->residus = $vieux;
+		}
+	}
+	static function normaliserCriteres(&$vieux, &$nouveaux) {
+		foreach($nouveaux as $critere) {
+			$vs = array_filter($vieux, function($v) use ($critere) {
+				if (empty($v->id)) {
+					return false;
+				}
+				return $v->id === $critere->id;
+			});
+			if (!empty($vs)) {
+				foreach($vs as $k=>$v) {
+//					unset($v->id);
+					if ($v->titre === $critere->titre) {
+						unset($v->titre);
+					}
+					if (isset($v->valeur) && isset($critere->valeur) && ($v->valeur === $critere->valeur)) {
+						unset($v->valeur);
+					}
+					if (isset($v->resultat)) {
+						$critere->resultat_valeur = $v->resultat;
+						unset($v->resultat);
+					}
+					if (isset($v->commentaires)) {
+						$critere->resultat_commentaires = $v->commentaires;
+						unset($v->commentaires);
+					}
+					if (!empty($v->criteres) && !empty($critere->criteres)) {
+						self::normaliserCriteres($v->criteres, $critere->criteres);
+						if(count($v->criteres) === 0) {
+							unset($v->criteres);
+						}
+					}
+					if(count((array)$v) <= 1) {
+						unset($vieux[$k]);
+					}
+				}
+			}
 		}
 	}
 	static function config($cours, $session="") {
@@ -276,14 +312,24 @@ class GValue {
 		return json_decode(file_get_contents($path));
 	}
 	static function resultat($cours, $session, $evaluation, $matricule) {
-		$path = self::pathResultats("{$cours}/{$session}/{$evaluation}/{$matricule}.json");
-		if (file_exists($path)) {
-			$resultats = json_decode(file_get_contents($path));
-		} else {
-			$resultats = self::creerResultat($cours, $session, $evaluation, $matricule);
+		$pathResultat = self::pathResultats("{$cours}/{$session}/{$evaluation}/{$matricule}.json");
+		$pathEvaluation = self::pathEvaluations("{$cours}/{$session}/{$evaluation}.json");
+		$eval = json_decode(file_get_contents($pathEvaluation));
+		$resultat = self::creerResultat($eval, $matricule);
+		if (!file_exists($pathResultat)) {
+			return $resultat;
 		}
-		$resultats->evaluation = self::evaluation($cours, $session, $evaluation);
-		self::normaliserResultats($resultats->evaluation->criteres, $resultats->criteres);
-		self::outputJson($resultats);
+		$vieux = json_decode(file_get_contents($pathResultat));
+		self::normaliserResultats($vieux, $resultat);
+		return $resultat;
+	}
+	static function outputResultat($cours, $session, $evaluation, $matricule) {
+		$resultat = self::resultats($cours, $session, $evaluation, $matricule);
+		self::outputJson($resultat);
+	}
+	static public function sauvegarderResultats($cours, $session, $evaluation, $matricule, $resultats) {
+		$path = self::pathResultats("{$cours}/{$session}/{$evaluation}/{$matricule}.json");
+		file_put_contents($path, $resultats);
+		self::outputJson(["sauvegarde"=>"ok"]);
 	}
 }
